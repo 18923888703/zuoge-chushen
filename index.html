@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>做个厨神 · 家庭烹饪博物馆</title>
+<link rel="stylesheet" href="css/01-tokens.css">
+<link rel="stylesheet" href="css/02-paper.css">
+<link rel="stylesheet" href="css/03-components.css">
+<link rel="stylesheet" href="css/04-pages.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="wobble">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="9" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="1.1" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+
+    <pattern id="hatch" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="5" stroke="#2A241E" stroke-width=".55"/>
+    </pattern>
+    <pattern id="hatch2" width="4" height="4" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <line x1="0" y1="0" x2="0" y2="4" stroke="#2A241E" stroke-width=".45"/>
+    </pattern>
+    <pattern id="hatch-dense" width="3" height="3" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="3" stroke="#2A241E" stroke-width=".5"/>
+    </pattern>
+    <pattern id="stipple" width="5" height="5" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1.4" r=".55" fill="#2A241E"/>
+      <circle cx="3.6" cy="3.6" r=".45" fill="#2A241E"/>
+    </pattern>
+  </defs>
+</svg>
+
+<div class="stage">
+  <div class="phone">
+    <div class="screen" id="screen">
+
+      <div class="statusbar">
+        <span id="sb-time">21:17</span>
+        <div class="sb-right">
+          <span class="sb-mark">MUSEUM</span>
+          <div class="bat"><i></i></div>
+        </div>
+      </div>
+
+      <main class="view" id="view"></main>
+
+      <nav class="tabbar" id="tabbar"></nav>
+
+      <div class="mini-timer" id="mini-timer" hidden></div>
+      <button class="fab" id="ai-fab" hidden aria-label="向馆长请教"></button>
+
+      <div id="cook-layer"></div>
+      <div id="overlay"></div>
+      <div class="toast-wrap" id="toasts"></div>
+
+    </div>
+  </div>
+</div>
+
+<script src="js/ui/dom.js"></script>
+<script src="js/ui/illustrations.js"></script>
+<script src="js/data/recipes-ext.js"></script>
+<script src="js/data/recipes-ext2.js"></script>
+<script src="js/data/recipes-ext3.js"></script>
+<script src="js/data/recipes-ext4.js"></script>
+<script src="js/data/recipes.js"></script>
+<script src="js/data/pantry.js"></script>
+<script src="js/data/videos.js"></script>
+<script src="js/core/store.js"></script>
+<script src="js/core/timer.js"></script>
+<script src="js/core/ai-mock.js"></script>
+<script src="js/core/router.js"></script>
+<script src="js/views/home.js"></script>
+<script src="js/views/recipe.js"></script>
+<script src="js/views/shopping.js"></script>
+<script src="js/views/cook.js"></script>
+<script src="js/views/discover.js"></script>
+<script src="js/views/me.js"></script>
+<script src="js/views/assistant.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
