@@ -109,6 +109,9 @@
         }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有记录，做完一件展品点「完成了」就会记在这里。</div>') +
       '</div>' +
 
+      '<div class="install-hint"><b>把本馆装进手机</b> —— iOS：Safari 里点<b>分享 › 添加到主屏幕</b>' +
+      '；Android：浏览器菜单里点<b>添加到主屏幕 / 安装应用</b>。装好后全屏打开，离线也能看。</div>' +
+
       '<div class="foot-note">这是个原型，数据都存在你自己的浏览器里。<br>AI 部分目前用本地模拟，接口层已单独封装，换真实模型改动很小。</div>';
     },
 
