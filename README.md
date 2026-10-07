@@ -11,7 +11,11 @@
 
 ## 打开方式
 
-直接双击 `index.html`（或拖进浏览器）。无需构建、无需装依赖、无需联网。
+**在线版**（已部署到 GitHub Pages）：https://18923888703.github.io/zuoge-chushen/
+
+**本地版**：直接双击 `index.html`（或拖进浏览器）。无需构建、无需装依赖、无需联网。
+
+仓库：https://github.com/18923888703/zuoge-chushen
 建议在 Chrome / Safari 里看，窗口高度尽量大于 900px。
 
 ## 主链路
