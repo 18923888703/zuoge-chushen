@@ -92,6 +92,7 @@
   window.D.$('#tabbar').addEventListener('click', function (e) {
     var t = e.target.closest('[data-tab]');
     if (!t) return;
+    if (window.Nav) window.Nav.buzz(8);   /* Android 触感反馈 */
     window.Router.go('#/' + t.getAttribute('data-tab'));
   });
 
