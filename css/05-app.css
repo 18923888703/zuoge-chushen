@@ -81,6 +81,30 @@ button,a,[data-tab],.tab,.fab,.mini-timer,.tabbar,.statusbar{
   .install-hint{display:none !important}
 }
 
+/* ============================================================
+   转场动画：旧页快照滑走 + 新页滑入（iOS push / pop 同款）
+   ============================================================ */
+.nav-ghost{
+  position:absolute;z-index:9;pointer-events:none;overflow:hidden;
+}
+.nav-out-left{animation:navOutLeft .3s cubic-bezier(.2,.8,.3,1) forwards}
+.nav-in-right{animation:navInRight .3s cubic-bezier(.2,.8,.3,1)}
+.nav-out-right{animation:navOutRight .3s cubic-bezier(.2,.8,.3,1) forwards}
+.nav-in-left{animation:navInLeft .3s cubic-bezier(.2,.8,.3,1)}
+
+@keyframes navOutLeft{to{transform:translateX(-27%);opacity:.4}}
+@keyframes navInRight{from{transform:translateX(100%)}to{transform:none}}
+@keyframes navOutRight{to{transform:translateX(100%)}}
+@keyframes navInLeft{from{transform:translateX(-27%);opacity:.4}to{transform:none;opacity:1}}
+
+/* 边缘右滑返回：跟手的那一层 */
+.swiping{box-shadow:-8px 0 22px rgba(42,36,30,.18)}
+
+@media (prefers-reduced-motion:reduce){
+  .nav-ghost{display:none !important}
+  .nav-in-right,.nav-in-left,.nav-out-left,.nav-out-right{animation:none !important}
+}
+
 /* ---------- 安装引导卡：只在手机浏览器里出现，装成 App 后自动消失 ---------- */
 .install-hint{
   display:none;
