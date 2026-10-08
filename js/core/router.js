@@ -1,8 +1,14 @@
 (function () {
+  var TABSET = { home: 1, discover: 1, shopping: 1, me: 1 };
+
   var Router = {
     routes: {},
     name: 'home',
     params: [],
+    _stack: [],
+
+    /* 还有上一页可以返回吗（右滑手势用） */
+    canBack: function () { return this._stack.length > 1; },
 
     register: function (name, view) { this.routes[name] = view; },
 
@@ -16,26 +22,50 @@
       else { location.hash = hash; }
     },
 
-    render: function () {
+    render: function (dir) {
       var v = this.routes[this.name] || this.routes.home;
       var root = window.D.$(v.container || '#view');
+
+      /* 转场：先给旧页拍快照，再换内容，最后让它滑走 */
+      if (window.Nav) {
+        window.Nav.snapshot();
+        window.Nav.reset(root);
+      }
+
       if (v.container === '#cook-layer') window.D.$('#view').innerHTML = '';
       else window.D.$('#cook-layer').innerHTML = '';
       root.innerHTML = (v.render ? v.render(this.params) : '') || '';
       root.scrollTop = 0;
       if (v.mount) v.mount(root, this.params);
       window.App.updateChrome(this.name);
+
+      if (window.Nav && (dir === 'fwd' || dir === 'back')) window.Nav.play(root, dir);
     },
 
     handle: function () {
       var p = this.parse(location.hash);
       if (!this.routes[p.name]) p = { name: 'home', params: [] };
+
+      /* 判断方向：回退 = 命中栈里上一页；tab 之间互切 = 无动画 */
+      var h = location.hash || '#/home';
+      var st = this._stack;
+      var dir = 'none';
+      if (!st.length) { st.push(h); }                                  /* 首屏 */
+      else if (st.length >= 2 && st[st.length - 2] === h) { st.pop(); dir = 'back'; }
+      else if (st[st.length - 1] === h) { /* 原地刷新，不动 */ }
+      else if (TABSET[p.name]) {                                       /* tab 是根：回 tab 等于收起详情页 */
+        var fromDetail = !TABSET[this.name];
+        st.length = 0; st.push(h);
+        dir = fromDetail ? 'back' : 'none';
+      }
+      else { st.push(h); dir = 'fwd'; }
+
       this.name = p.name;
       this.params = p.params;
-      this.render();
+      this.render(dir);
     },
 
-    refresh: function () { this.render(); },
+    refresh: function () { this.render('none'); },
 
     /* 幂等：重复调用会导致事件被派发两次 */
     start: function () {
