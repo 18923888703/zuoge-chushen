@@ -30,6 +30,7 @@
 - 全屏 standalone 运行，自动适配刘海/灵动岛与底部 Home 条（safe-area）
 - Service Worker 离线缓存：断网也能打开，二次进入秒开
 - 手机浏览器里自动脱掉展柜外壳铺满整屏；桌面端保留外壳（原型展示态）
+- **原生手感**：页面 push/pop 转场动画（`js/ui/nav.js`）、左边缘右滑返回（跟手、可取消）、Android 触感反馈
 - 更新版本：改 `sw.js` 顶部的 `CACHE` 版本号（`chushen-v1` → `chushen-v2`）即可强制刷新缓存
 
 
