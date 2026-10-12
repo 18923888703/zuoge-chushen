@@ -98,7 +98,7 @@ button,a,[data-tab],.tab,.fab,.mini-timer,.tabbar,.statusbar{
 @keyframes navInLeft{from{transform:translateX(-27%);opacity:.4}to{transform:none;opacity:1}}
 
 /* 边缘右滑返回：跟手的那一层 */
-.swiping{box-shadow:-8px 0 22px rgba(42,36,30,.18)}
+.swiping{box-shadow:-8px 0 22px rgba(0,0,0,.12)}
 
 @media (prefers-reduced-motion:reduce){
   .nav-ghost{display:none !important}
