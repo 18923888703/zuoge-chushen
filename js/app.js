@@ -1,8 +1,8 @@
 (function () {
   var TABS = [
-    { name: 'home', hash: '#/home', icon: 'home', label: '展厅' },
-    { name: 'discover', hash: '#/discover', icon: 'search', label: '检索' },
-    { name: 'shopping', hash: '#/shopping', icon: 'basket', label: '采集' },
+    { name: 'home', hash: '#/home', icon: 'home', label: '下厨' },
+    { name: 'discover', hash: '#/discover', icon: 'search', label: '搜索' },
+    { name: 'shopping', hash: '#/shopping', icon: 'basket', label: '买菜' },
     { name: 'me', hash: '#/me', icon: 'me', label: '档案' }
   ];
 
