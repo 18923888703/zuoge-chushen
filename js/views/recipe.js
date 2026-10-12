@@ -30,17 +30,16 @@
     '</div>';
   }
 
+  /* 这道菜的档案：做法、时令、菜系 */
   function catalogue(r) {
     var bits = [
-      ['No.', r.no || '—'],
-      ['Latin', r.latin || '—'],
-      ['Family', r.family || '—'],
-      ['Season', r.season || '四季'],
-      ['Origin', r.origin || '家常']
+      ['做法', r.kind || '家常'],
+      ['时令', r.season || '四季'],
+      ['菜系', r.origin || '家常']
     ];
     return '<div class="rc-meta">' + bits.map(function (b) {
       return '<span class="m">' + b[0] + ' <b>' + window.D.esc(b[1]) + '</b></span>';
-    }).join('<span class="m">·</span>') + '</div>';
+    }).join('') + '</div>';
   }
 
   function ingRow(x, ratio, askable) {
@@ -59,7 +58,7 @@
   var RecipeView = {
     render: function (params) {
       var r = window.findRecipe(params[0]);
-      if (!r) return '<div class="empty">' + window.ART.get('empty') + '<p>馆藏里没有这件</p></div>';
+      if (!r) return '<div class="empty">' + window.D.icon('note','ic-lg') + '<p>菜谱里没有这道菜</p></div>';
       if (params[0] !== lastId) { lastId = params[0]; varIdx = 0; }
 
       var fav = window.Store.isFav(r.id);
@@ -78,22 +77,27 @@
         '</div>' +
 
         '<div class="rc-hero">' +
-          '<div class="rc-plate"><div class="art">' + window.ART.get(r.art, { annot: r.annot }) + '</div></div>' +
+          '<div class="rc-plate">' +
+            window.DishPhoto.html(r) +
+            '<div class="veil"></div>' +
+            '<div class="tags">' +
+              '<span class="badge-kind">' + window.D.esc(r.kind || '家常') + '</span>' +
+              '<span class="badge-kind">' + window.D.esc(window.DishPhoto.no(r)) + '</span>' +
+            '</div>' +
+            '<div class="cap">' +
+              '<h2>' + window.D.esc(r.name) + '</h2>' +
+              '<div class="tl">' + window.D.esc(r.tagline) + '</div>' +
+            '</div>' +
+          '</div>' +
         '</div>' +
 
         catalogue(r) +
 
-        '<div class="rc-title">' +
-          '<h2>' + window.D.esc(r.name) + '</h2>' +
-          '<div class="tl">' + window.D.esc(r.tagline) + '</div>' +
-          '<div style="margin-top:11px"><span class="stamp">馆藏认证</span></div>' +
-        '</div>' +
-
         '<div class="stat-row">' +
-          '<div class="stat"><div class="k">Prep</div><div class="v">' + r.prep + ' 分</div></div>' +
-          '<div class="stat"><div class="k">Cook</div><div class="v">' + r.cook + ' 分</div></div>' +
-          '<div class="stat"><div class="k">Level</div><div class="v">' + diffLabel(r.difficulty) + '</div></div>' +
-          '<div class="stat"><div class="k">Serves</div><div class="v">' + people + ' 人</div></div>' +
+          '<div class="stat"><div class="k">备料</div><div class="v">' + r.prep + ' 分</div></div>' +
+          '<div class="stat"><div class="k">下锅</div><div class="v">' + r.cook + ' 分</div></div>' +
+          '<div class="stat"><div class="k">难度</div><div class="v">' + diffLabel(r.difficulty) + '</div></div>' +
+          '<div class="stat"><div class="k">份量</div><div class="v">' + people + ' 人</div></div>' +
         '</div>' +
 
         (Math.abs(ratio - 1) > 0.02 ? '<div class="pad" style="padding-top:9px">' +
@@ -119,20 +123,20 @@
             window.D.icon('basket', 'ic-sm') + '只把缺的加进清单</button>' +
         '</div>' +
 
-        (r.flavor ? '<div class="sec" style="margin:20px 18px 8px"><h3>风味谱<span class="hl"> ›</span></h3><span class="more">Flavor Profile 0–4</span></div>' +
+        (r.flavor ? '<div class="sec" style="margin:20px 18px 8px"><h3>这道菜的口味<span class="hl"> ›</span></h3><span class="more">咸甜酸鲜辣油</span></div>' +
         flavorRow(r) : '') +
 
-        '<div class="sec" style="margin:20px 18px 8px"><h3>流派做法<span class="hl"> ›</span></h3><span class="more">按你的偏好排序</span></div>' +
+        '<div class="sec" style="margin:20px 18px 8px"><h3>换个做法<span class="hl"> ›</span></h3><span class="more">按你的口味排的</span></div>' +
         r.variations.map(function (x, i) {
           return '<div class="var-card' + (i === varIdx ? ' on' : '') + '" data-act="pickVar" data-i="' + i + '">' +
             '<div class="vh"><span class="vn">' + window.D.esc(x.title) + '</span>' +
             '<span class="chip ' + (i === varIdx ? 'ochre' : 'plain') + '">' + (i === varIdx ? '已选' : '选这个') + '</span></div>' +
             '<div class="vd">' + window.D.esc(x.diff) + '</div>' +
-            (i === varIdx ? '<div class="vs">✓ 已按这个流派调整下面的工序说明</div>' : '') +
+            (i === varIdx ? '<div class="vs">✓ 下面的步骤会照这个做法来</div>' : '') +
           '</div>';
         }).join('') +
 
-        '<div class="sec" style="margin:16px 18px 6px"><h3>制作工序</h3><span class="more">' + r.steps.length + ' Steps</span></div>' +
+        '<div class="sec" style="margin:16px 18px 6px"><h3>怎么一步步做</h3><span class="more">' + r.steps.length + ' 步</span></div>' +
         '<div class="ing-card">' +
           r.steps.map(function (s, i) {
             return '<div class="step-item">' +
@@ -146,19 +150,19 @@
           }).join('') +
         '</div>' +
 
-        '<div class="sec" style="margin:20px 18px 8px"><h3>影像档案<span class="hl"> ›</span></h3><span class="more">External Reference</span></div>' +
+        '<div class="sec" style="margin:20px 18px 8px"><h3>看别人怎么做<span class="hl"> ›</span></h3><span class="more">视频与图文</span></div>' +
         '<div class="arch" style="cursor:pointer" data-act="openDy" data-id="' + r.id + '">' +
-          '<span class="cover">' + window.ART.get(r.art) + '<span class="dur">VIDEO</span></span>' +
+          '<span class="cover">' + window.DishPhoto.html(r) + '<span class="dur">视频</span></span>' +
           '<span class="grow">' +
-            '<span class="vt">抖音上检索「' + window.D.esc(r.name) + '」</span>' +
+            '<span class="vt">抖音上搜索「' + window.D.esc(r.name) + '」</span>' +
             '<span class="vm"><span class="pf pf-dy">抖音</span>看别人怎么做</span>' +
           '</span>' +
           window.D.icon('link', 'ic-sm') +
         '</div>' +
         '<div class="arch" style="cursor:pointer" data-act="openXhs" data-id="' + r.id + '">' +
-          '<span class="cover">' + window.ART.get(r.art) + '<span class="dur">NOTE</span></span>' +
+          '<span class="cover">' + window.DishPhoto.html(r) + '<span class="dur">图文</span></span>' +
           '<span class="grow">' +
-            '<span class="vt">小红书上检索「' + window.D.esc(r.name) + '」</span>' +
+            '<span class="vt">小红书上搜索「' + window.D.esc(r.name) + '」</span>' +
             '<span class="vm"><span class="pf pf-xhs">小红书</span>看图文笔记</span>' +
           '</span>' +
           window.D.icon('link', 'ic-sm') +
@@ -166,7 +170,7 @@
 
         '<div style="padding:10px 18px 24px">' +
           '<button class="btn btn-block" data-act="cook" data-id="' + r.id + '">' +
-            window.D.icon('play', 'ic-sm') + '直接开始制作（不备料）</button>' +
+            window.D.icon('play', 'ic-sm') + '直接开做（不备料）</button>' +
         '</div>';
     },
 
