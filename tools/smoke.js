@@ -34,7 +34,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
   ok('globals loaded', !!(w.Router && w.Store && w.Timers && w.AI && w.App && w.Assistant));
   ok('recipe library size', (w.RECIPES || []).length >= 40, (w.RECIPES || []).length + ' recipes');
-  ok('every recipe has meta', (w.RECIPES || []).every(r => r.no && r.latin && r.family),
+  ok('every recipe has kitchen meta', (w.RECIPES || []).every(r => r.no && r.kind),
     (w.RECIPES || []).filter(r => !r.no).map(r => r.id).join(',') || 'all ok');
 
   ok('view rendered', w.document.querySelector('#view').innerHTML.length > 100);
@@ -46,8 +46,11 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     w.document.querySelector('.cabinet [data-act]');
   if (drawBtn) drawBtn.click();
   await wait(1800);
-  const card = w.document.querySelector('.specimen-card');
-  ok('draw -> specimen card', !!card, card ? card.querySelector('.nm').textContent : 'none');
+  const card = w.document.querySelector('.home-hero');
+  const heroQ = w.document.querySelector('.home-hero .hero-q');
+  ok('draw -> home hero', !!card && !!heroQ, heroQ ? heroQ.textContent : 'none');
+  ok('hero photo full-bleed', !!w.document.querySelector('.home-hero img.hero-img'));
+  ok('brand logo present', w.document.querySelector('.home-hero .brand .brand-txt b').textContent === '我是厨神');
 
   // 加清单
   const addBtn = w.document.querySelector('[data-act="addList"]');
@@ -55,9 +58,9 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(150);
   ok('add to shopping', w.Store.get().shopping.length > 0, w.Store.get().shopping.length + ' items');
 
-  // 展签
+  // 菜谱详情
   w.Router.go('#/recipe/braised-pork'); await wait(150);
-  ok('recipe page', w.document.querySelector('#view').innerHTML.indexOf('制作工序') > 0);
+  ok('recipe page', w.document.querySelector('#view').innerHTML.indexOf('怎么一步步做') > 0);
   ok('recipe ingredients', w.document.querySelectorAll('.ing-row, .ing-card').length >= 3);
 
   const varBtns = w.document.querySelectorAll('[data-act="variation"]');
@@ -67,7 +70,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 
   // 清单
   w.Router.go('#/shopping'); await wait(150);
-  ok('shopping page', w.document.querySelector('#view').innerHTML.indexOf('采集清单') > 0);
+  ok('shopping page', w.document.querySelector('#view').innerHTML.indexOf('买菜清单') > 0);
   const cb = w.document.querySelector('[data-act="toggle"]');
   if (cb) cb.click();
   await wait(100);
@@ -132,7 +135,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     parsed ? parsed.textContent.slice(0, 40) : 'none');
   ok('parsed declares source', !!parsed && parsed.innerHTML.indexOf('不是从视频里提取') >= 0);
 
-  // 没命中馆藏 -> 诚实说做不到，不编造配料
+  // 没命中菜谱 -> 诚实说做不到，不编造配料
   const inp2 = w.document.querySelector('#q');
   if (inp2) inp2.value = '佛跳墙';
   w.DiscoverView.actions.search();
@@ -141,7 +144,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   if (miss) miss.click();
   await wait(1800);
   const missed = w.document.querySelector('.parsed');
-  ok('unmatched says so', !!missed && missed.innerHTML.indexOf('不在本馆馆藏里') >= 0,
+  ok('unmatched says so', !!missed && missed.innerHTML.indexOf('不在现有菜谱里') >= 0,
     missed ? missed.textContent.slice(0, 30) : 'none');
   ok('unmatched gives no fake ingredients', !!missed && missed.querySelectorAll('.ing-row').length === 0);
 
