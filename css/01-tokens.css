@@ -1,65 +1,92 @@
 :root{
-  /* —— 纸：淡雅米白 —— */
-  --paper:#F6F3EA;
-  --paper-2:#F1EDE1;
-  --paper-3:#E9E3D4;
-  --paper-deep:#DFD8C6;
-  --card:#FFFDF8;       /* 展签卡：近乎纯白，从纸底浮出来 */
-  --card-2:#FAF6EC;
-  --label:#F0EBDC;      /* 标本标签底 */
+  /* —— 底色：微暖的米白，比纯中性多一点烟火气 —— */
+  --paper:#F7F5F1;
+  --paper-2:#F1EEE8;
+  --paper-3:#E7E3DB;
+  --paper-deep:#DDD8CF;
+  --card:#FFFFFF;        /* 卡片：纯白 */
+  --card-2:#FBFAF7;
+  --label:#EFEBE4;
 
   /* —— 墨 —— */
-  --ink:#2A241E;
-  --ink-2:#5B5245;
-  --ink-3:#8B8072;
+  --ink:#1A1A18;
+  --ink-2:#6E6D68;
+  --ink-3:#A6A59F;
 
   /* —— 线 —— */
-  --line:rgba(42,36,30,.14);
-  --line-2:rgba(42,36,30,.28);
-  --rule:rgba(42,36,30,.45);
-  --line-strong:rgba(42,36,30,.62);
+  --line:rgba(26,26,24,.08);
+  --line-2:rgba(26,26,24,.14);
+  --rule:rgba(26,26,24,.30);
+  --line-strong:rgba(26,26,24,.42);
 
-  /* —— 矿物色 —— */
-  --seal:#8A3A2C;       /* 朱砂印 */
-  --seal-soft:#F8EAE6;
-  --brass:#95763A;      /* 黄铜 */
-  --brass-soft:#F8F0D9;
-  --sage:#5C7364;       /* 鼠尾草绿 */
-  --sage-soft:#EBF1EA;
-  --ochre:#A5733F;      /* 赭石 */
-  --ochre-soft:#F9EFDA;
-  --slate:#4E5F6B;      /* 石板蓝 */
-  --slate-soft:#EBF1F4;
-  --plum:#6B4A5E;
+  /* —— 强调：柿红，只用于关键按钮与徽标 —— */
+  --tomato:#C4492E;
+  --tomato-soft:#FBEEE9;
 
-  /* —— 字体：中文宋体 + 西文衬线 —— */
-  --serif:"Songti SC","STSong","SimSun","Noto Serif CJK SC","Source Han Serif SC",serif;
-  --en:Georgia,"Times New Roman","Palatino",serif;
+  /* —— 辅助色：食材色，低饱和 —— */
+  --amber:#D9963A;
+  --amber-soft:#FCF2DF;
+  --leaf:#6E8C5A;
+  --leaf-soft:#EDF3E7;
+  --clay:#C08066;
+  --clay-soft:#FAF1EC;
+  --slate:#6B7681;
+  --slate-soft:#EDF0F2;
 
-  /* —— 形：几乎不用圆角 —— */
-  --r-lg:4px;
-  --r-md:3px;
-  --r-sm:2px;
-  --pill:2px;
+  /* —— 渐变：只在 LOGO 徽标、主按钮、图片遮罩上出现 —— */
+  --grad-warm:linear-gradient(135deg,#C4492E 0%,#D9963A 100%);
+  --grad-soft:linear-gradient(135deg,#FBEEE9 0%,#FCF2DF 100%);
+  --scrim-top:linear-gradient(180deg,rgba(20,14,10,.42) 0%,rgba(20,14,10,0) 34%);
+  --scrim-bottom:linear-gradient(180deg,rgba(20,14,10,0) 42%,rgba(20,14,10,.78) 100%);
 
-  --sh:0 1px 0 rgba(42,36,30,.10), 0 3px 10px rgba(42,36,30,.06);
-  --sh-sm:0 1px 0 rgba(42,36,30,.08), 0 2px 6px rgba(42,36,30,.05);
+  /* 兼容旧变量名 */
+  --seal:var(--tomato);
+  --seal-soft:var(--tomato-soft);
+  --brass:var(--amber);
+  --brass-soft:var(--amber-soft);
+  --sage:var(--leaf);
+  --sage-soft:var(--leaf-soft);
+  --ochre:var(--amber);
+  --ochre-soft:var(--amber-soft);
+  --wood:var(--clay);
+  --wood-soft:var(--clay-soft);
+  --butter:var(--amber);
+  --butter-soft:var(--amber-soft);
+  --olive:var(--leaf);
+  --olive-soft:var(--leaf-soft);
+  --plum:#8A6A74;
 
-  /* —— 双线展签框：内实线 + 纸色间隙 + 外细线 —— */
-  --frame:0 0 0 2.5px var(--paper), 0 0 0 3.3px rgba(42,36,30,.24);
-  --frame-lg:0 0 0 3px var(--paper), 0 0 0 4px rgba(42,36,30,.34);
+  /* —— 字体 —— */
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:var(--sans);
+  --en:var(--sans);
+
+  /* —— 形 —— */
+  --r-xl:18px;
+  --r-lg:14px;
+  --r-md:11px;
+  --r-sm:8px;
+  --pill:999px;
+
+  /* —— 光：分层用，克制但有存在感 —— */
+  --sh:0 2px 8px rgba(26,26,24,.06);
+  --sh-sm:0 1px 2px rgba(26,26,24,.05);
+  --sh-md:0 6px 20px rgba(26,26,24,.08);
+  --sh-lg:0 10px 30px rgba(26,26,24,.12);
+
+  --frame:inset 0 0 0 1px rgba(26,26,24,.05);
+  --frame-lg:inset 0 0 0 1px rgba(26,26,24,.06);
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;height:100%}
 body{
-  font-family:var(--serif);
-  font-size:13.5px;
-  line-height:1.9;
-  letter-spacing:.02em;
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.7;
+  letter-spacing:.01em;
   color:var(--ink);
-  background:
-    radial-gradient(120% 90% at 50% 0%,#F2EEE6,#DFD9CC 70%);
+  background:#EFEFED;
   display:flex;align-items:center;justify-content:center;
   padding:20px 0;
   -webkit-font-smoothing:antialiased;
@@ -73,9 +100,9 @@ img{display:block;max-width:100%}
 
 .muted{color:var(--ink-2)}
 .faint{color:var(--ink-3)}
-.small{font-size:12px}
-.xs{font-size:11px}
-.xxs{font-size:10px}
+.small{font-size:12.5px}
+.xs{font-size:11.5px}
+.xxs{font-size:10.5px}
 .center{text-align:center}
 .row{display:flex;align-items:center}
 .between{display:flex;align-items:center;justify-content:space-between}
@@ -83,16 +110,16 @@ img{display:block;max-width:100%}
 .nowrap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .b{font-weight:600}
 
-/* 展签式西文小标：大写 + 宽字距 */
-.en{font-family:var(--en);letter-spacing:.16em;text-transform:uppercase;font-size:9.5px;color:var(--ink-3)}
-.num{font-family:var(--en);letter-spacing:.04em}
-.cn{font-family:var(--serif);letter-spacing:.14em}
+/* 英文小标：轻量说明字 */
+.en{font-size:10.5px;color:var(--ink-3);letter-spacing:.02em}
+.num{font-variant-numeric:tabular-nums}
+.cn{letter-spacing:.02em}
 
-.tag{font-size:9.5px;font-family:var(--en);letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3)}
+.tag{font-size:11px;color:var(--ink-2)}
 
-.ic{width:16px;height:16px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
-.ic-sm{width:13px;height:13px}
-.ic-lg{width:20px;height:20px}
+.ic{width:17px;height:17px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:14px;height:14px}
+.ic-lg{width:21px;height:21px}
 
 ::-webkit-scrollbar{width:0;height:0}
 [hidden]{display:none !important}
