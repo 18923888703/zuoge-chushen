@@ -1,138 +1,122 @@
 .stage{position:relative}
 
-/* —— 展柜外壳：浅胡桃木 —— */
+/* —— 手机外壳：中性浅灰（只在桌面原型态出现） —— */
 .phone{
   position:relative;
   width:375px;height:812px;
-  border-radius:14px;
-  background:linear-gradient(160deg,#D3C4A8,#B9A888 55%,#CBBDA1);
+  border-radius:26px;
+  background:#E3E3E1;
   padding:11px;
-  box-shadow:0 26px 58px rgba(130,112,88,.26), 0 2px 0 rgba(255,255,255,.4) inset;
+  box-shadow:0 24px 54px rgba(26,24,20,.14), inset 0 0 0 1px rgba(255,255,255,.6);
   flex:0 0 auto;
 }
 .phone::after{
-  content:'';position:absolute;inset:4px;border-radius:11px;
-  border:1px solid rgba(74,58,38,.20);pointer-events:none;
-}
-.phone::before{
-  content:'';position:absolute;inset:8px;border-radius:9px;
-  border:1px solid rgba(74,58,38,.11);pointer-events:none;
+  content:'';position:absolute;inset:4px;border-radius:22px;
+  border:1px solid rgba(27,26,25,.07);pointer-events:none;
 }
 
-/* —— 屏幕：做旧纸 —— */
+/* —— 屏幕：纯白底，不加任何纹理与光晕 —— */
 .screen{
   position:relative;
   width:100%;height:100%;
-  border-radius:9px;
+  border-radius:18px;
   overflow:hidden;
   background:var(--paper);
   display:flex;flex-direction:column;
-}
-/* 纸纹：噪点 + 细网格 + 四角压暗（都压到很淡） */
-.screen::before{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:6;
-  background-image:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.026'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(0deg,rgba(42,36,30,.026) 0 1px,transparent 1px 23px),
-    repeating-linear-gradient(90deg,rgba(42,36,30,.026) 0 1px,transparent 1px 23px);
-}
-.screen::after{
-  content:'';position:absolute;inset:0;pointer-events:none;z-index:6;
-  background:radial-gradient(120% 80% at 50% 45%,transparent 58%,rgba(90,72,50,.055) 100%);
 }
 
 .view{
   position:relative;z-index:1;
   flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
-  padding-bottom:12px;
+  padding-bottom:14px;
 }
 
 .statusbar{
   position:relative;z-index:3;
-  height:40px;flex:0 0 auto;
+  height:42px;flex:0 0 auto;
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 20px;font-size:11px;font-family:var(--en);letter-spacing:.06em;color:var(--ink-2);
+  padding:0 20px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink-2);
 }
 .statusbar .sb-right{display:flex;align-items:center;gap:8px}
-.statusbar .sb-mark{font-family:var(--en);font-size:8px;letter-spacing:.28em;color:var(--ink-3)}
-.statusbar .bat{width:19px;height:9px;border:1px solid var(--rule);position:relative}
-.statusbar .bat::after{content:'';position:absolute;top:1.5px;left:-3px;width:2px;height:4px;background:var(--rule)}
-.statusbar .bat i{position:absolute;inset:1px;right:5px;background:var(--ink-2)}
+.statusbar .sb-mark{font-size:9.5px;letter-spacing:.1em;color:var(--ink-3)}
+.statusbar .bat{width:20px;height:10px;border:1px solid var(--rule);border-radius:2px;position:relative}
+.statusbar .bat::after{content:'';position:absolute;top:2px;left:-3.5px;width:2px;height:4px;background:var(--rule);border-radius:0 1px 1px 0}
+.statusbar .bat i{position:absolute;inset:1.5px;right:5px;background:var(--ink-2);border-radius:1px}
 
-/* ============ 博物馆装饰件 ============ */
+/* ============ 简约容器件 ============ */
 
-/* 双线框：外粗内细（展签边框） */
+/* 卡片：白底 + 一道细边，不靠阴影分层 */
 .plate{
   position:relative;
   background:var(--card);
-  border:1.4px solid var(--line-strong);
+  border:1px solid var(--line);
   border-radius:var(--r-md);
-  padding:14px 15px;
-  box-shadow:var(--frame);
+  padding:15px 16px;
 }
-.plate::after{
-  content:'';position:absolute;inset:3.5px;
-  border:.6px solid var(--rule-soft,rgba(42,36,30,.22));
-  border-radius:1px;pointer-events:none;
-}
-.plate.flat{background:transparent;border-color:var(--line-2)}
+.plate.flat{background:transparent;border:1px solid var(--line)}
 .plate.tint{background:var(--card-2)}
 
-/* 虚线内框（标本台） */
+/* 备料区：细线内框，不用虚线 */
 .vignette{
-  border:1px dashed var(--line-2);
+  border:1px solid var(--line);
   border-radius:var(--r-sm);
 }
 
-/* 菱形分隔线 */
+/* 分隔：一条细线，不加装饰 */
 .diam{
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  margin:18px 0;color:var(--ink-2);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:20px 0;color:transparent;
 }
 .diam::before,.diam::after{
-  content:'';flex:1;height:1px;background:var(--line-2);
+  content:'';flex:1;height:1px;background:var(--line);
 }
-.diam i{
-  width:6px;height:6px;background:var(--ink-2);
-  transform:rotate(45deg);display:block;flex:0 0 auto;position:relative;
-}
-.diam i::before,.diam i::after{
-  content:'';position:absolute;top:1.3px;width:3.4px;height:3.4px;background:var(--line-2);
-}
-.diam i::before{left:-8px}
-.diam i::after{right:-8px}
+.diam i{display:none}
 
-/* 编号铜牌 */
+/* 编号牌：浅灰小胶囊 */
 .no-plate{
   display:inline-flex;align-items:center;gap:5px;
-  padding:2px 8px 2px 6px;
-  background:var(--brass-soft);
-  border:1.2px solid var(--brass);
-  border-radius:var(--r-sm);
-  box-shadow:0 0 0 1px rgba(149,118,58,.22);
-  font-family:var(--en);font-size:9.5px;font-weight:700;letter-spacing:.12em;
-  color:#6B5320;
+  padding:3px 9px;
+  background:var(--paper-2);
+  border-radius:var(--pill);
+  font-size:10.5px;font-weight:500;font-variant-numeric:tabular-nums;
+  color:var(--ink-2);
 }
-.no-plate .sq{display:block;width:6px;height:6px;background:var(--brass);transform:rotate(45deg)}
+.no-plate .sq{display:none}
 
-/* 朱砂印章（歪着盖） */
+/* 口味戳：淡色胶囊 */
 .stamp{
   display:inline-flex;align-items:center;justify-content:center;
-  padding:3px 7px;
-  border:2px double var(--seal);
-  border-radius:2px;
-  color:var(--seal);
-  font-family:var(--serif);font-size:10px;font-weight:600;letter-spacing:.14em;
-  transform:rotate(-4.5deg);
-  opacity:.92;
+  padding:3px 9px;
+  border-radius:var(--pill);
+  background:var(--tomato-soft);
+  color:var(--tomato);
+  font-size:11px;font-weight:500;
 }
 
-/* 分隔 */
-.dash{border:0;border-top:1px dashed var(--line-2);margin:14px 0}
-.dash-soft{border:0;border-top:1px dashed var(--line);margin:12px 0}
-.hair{border:0;border-top:1px solid var(--line-2);margin:0}
-.hair-double{border:0;border-top:2.5px double var(--line-2);margin:0}
+/* 分隔线：统一细实线 */
+.dash{border:0;border-top:1px solid var(--line);margin:14px 0}
+.dash-soft{border:0;border-top:1px solid var(--line);margin:12px 0}
+.hair{border:0;border-top:1px solid var(--line);margin:0}
+.hair-double{border:0;border-top:1px solid var(--line);margin:0}
+
+/* —— 菜品实拍照片 —— */
+.dish-photo{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  background:var(--paper-3);
+}
+.photo-wrap{
+  position:relative;overflow:hidden;
+  background:var(--paper-3);
+}
+/* 照片底部压一层暗渐变，保证字压在上面也看得清（功能性，保留） */
+.photo-wrap::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,0) 50%,rgba(0,0,0,.44) 100%);
+}
+.photo-wrap.no-dim::after{display:none}
 
 @media (max-height:880px){ .phone{transform:scale(.9)} }
 @media (max-height:780px){ .phone{transform:scale(.8)} }
