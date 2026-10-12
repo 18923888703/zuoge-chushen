@@ -104,6 +104,7 @@
           '<span class="cook-dish">' + window.D.esc(r.name) + '</span>' +
           '<span class="grow"></span>' +
           '<span class="dots">' + dots + '</span>' +
+          '<button class="cook-ask" data-act="ask" aria-label="问厨房搭子">' + window.D.icon('chef', 'ic') + '</button>' +
         '</div>' +
 
         '<div class="cook-body">' +
@@ -119,8 +120,6 @@
           '<button class="btn" data-act="prev"' + (stepIdx === 0 ? ' disabled' : '') + '>上一步</button>' +
           '<button class="btn btn-primary" data-act="next">' + (last ? '做完了' : '下一步') + '</button>' +
         '</div>' +
-
-        '<button class="cook-ask" data-act="ask" aria-label="向馆长请教">' + window.D.icon('chef', 'ic-lg') + '</button>' +
       '</div>';
     },
 
