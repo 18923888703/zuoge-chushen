@@ -1,7 +1,7 @@
 /* 页面转场 + iOS 风格边缘右滑返回 + 触感反馈
    只做「手感」，不碰业务逻辑。 */
 (function () {
-  var DUR = 300;
+  var DUR = 300;      // 转场时长 ms，与 css/05-app.css 里的动画时长保持一致
 
   function reduced() {
     try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
@@ -16,9 +16,22 @@
   var Nav = {
     ghost: null,
 
-    /* 旧页快照：把当前页面拷一份贴在屏幕上，好让它「滑走」 */
+    /* 清掉当前快照 + 屏幕上任何历史残留（异常路径漏删的旧页克隆） */
+    clear: function () {
+      if (this.ghost && this.ghost.parentNode) this.ghost.parentNode.removeChild(this.ghost);
+      this.ghost = null;
+      var leftovers = document.querySelectorAll('.nav-ghost');
+      for (var i = 0; i < leftovers.length; i++) {
+        if (leftovers[i].parentNode) leftovers[i].parentNode.removeChild(leftovers[i]);
+      }
+    },
+
+    /* 旧页快照：把当前页面拷一份贴在屏幕上，好让它「滑走」。
+       只在真的要播转场（fwd/back）时调用；dir='none' 的渲染绝不能拍，
+       否则快照没人播放会永久残留，叠在新页上变成重影。 */
     snapshot: function () {
       if (reduced()) return;
+      this.clear();                       /* 防止连点时快照叠加 */
       var screen = document.getElementById('screen');
       var el = activeEl();
       if (!screen || !el || !el.firstChild) { this.ghost = null; return; }
@@ -35,7 +48,9 @@
       g.style.top = (er.top - sr.top) + 'px';
       g.style.width = er.width + 'px';
       g.style.height = er.height + 'px';
-      g.style.background = getComputedStyle(el).backgroundColor || '#F6F3EA';
+      var bg = getComputedStyle(el).backgroundColor;
+      if (!bg || bg === 'transparent' || bg === 'rgba(0, 0, 0, 0)') bg = '#F6F3EA';
+      g.style.background = bg;
       screen.appendChild(g);
       g.scrollTop = el.scrollTop;
       this.ghost = g;
