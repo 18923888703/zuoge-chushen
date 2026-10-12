@@ -9,10 +9,8 @@
     return (d.getMonth() + 1) + '月' + d.getDate() + '日 · 星期' + wk + ' · ' + meal;
   }
 
-  function stars(n) {
-    var s = '';
-    for (var i = 1; i <= 3; i++) s += i <= n ? '●' : '○';
-    return s;
+  function level(n) {
+    return ['简单', '还行', '费点事'][n - 1] || '还行';
   }
 
   function reason(r) {
@@ -27,36 +25,22 @@
     return '为什么挑它：' + bits.join('，') + '。';
   }
 
-  function dishCard(r) {
-    return '<div class="specimen-card">' +
-      '<div class="no">' +
-        '<span class="no-plate"><i class="sq"></i>' + window.D.esc(r.no || 'No.00') + '</span>' +
-        '<span class="stamp">' + window.D.esc(r.family || '家常') + '</span>' +
-        '<span class="grow"></span>' +
-        '<span class="tag">' + window.D.esc(r.season || '四季') + ' · ' + window.D.esc(r.origin || '家常') + '</span>' +
-      '</div>' +
-      '<div class="head">' +
-        '<div class="art">' + window.ART.get(r.art, { annot: r.annot }) + '</div>' +
-        '<div class="grow">' +
-          '<div class="nm">' + window.D.esc(r.name) + '</div>' +
-          '<div class="latin">' + window.D.esc(r.latin || '') + '</div>' +
-          '<div class="tl">' + window.D.esc(r.tagline) + '</div>' +
-          '<div class="meta">' +
-            '<span class="chip ochre">' + (r.prep + r.cook) + ' 分钟</span>' +
-            '<span class="chip brass">' + stars(r.difficulty) + '</span>' +
-            '<span class="chip">' + r.servings + ' 人份</span>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      '<div class="reason">' + window.D.icon('note', 'ic-sm') +
-        '<span>' + window.D.esc(reason(r)) + '</span></div>' +
-      '<div class="acts">' +
-        '<button class="btn btn-primary" data-act="cook" data-id="' + r.id + '">开始制作</button>' +
-        '<button class="btn" data-act="detail" data-id="' + r.id + '">看展签</button>' +
-        '<button class="btn btn-ghost" data-act="addList" data-id="' + r.id + '" style="flex:0 0 auto;padding:0 11px" aria-label="加入采集清单">' +
+  /* 抽到菜之后：操作区（图上只放名字，细节放白卡里） */
+  function dishBody(r) {
+    return '<div class="acts">' +
+        '<button class="btn btn-primary" data-act="cook" data-id="' + r.id + '">现在开做</button>' +
+        '<button class="btn" data-act="detail" data-id="' + r.id + '">看菜谱</button>' +
+        '<button class="btn btn-ghost" data-act="addList" data-id="' + r.id + '" aria-label="加入买菜清单">' +
           window.D.icon('plus', 'ic-sm') + '</button>' +
       '</div>' +
-    '</div>';
+      '<div class="meta">' +
+        '<span class="chip ochre">' + (r.prep + r.cook) + ' 分钟</span>' +
+        '<span class="chip brass">' + level(r.difficulty) + '</span>' +
+        '<span class="chip slate">' + r.servings + ' 人份</span>' +
+        '<span class="chip">' + window.D.esc(r.origin || '家常') + '</span>' +
+      '</div>' +
+      '<div class="reason">' + window.D.icon('note', 'ic-sm') +
+        '<span>' + window.D.esc(reason(r)) + '</span></div>';
   }
 
   var HomeView = {
@@ -65,66 +49,100 @@
       var spicyTxt = ['不吃辣', '微辣', '中辣', '重辣'][prefs.spicy];
       var oilTxt = prefs.oil === 'light' ? '少油' : (prefs.oil === 'rich' ? '不忌油' : '正常');
 
-      var slot;
+      /* 主图：抽到菜就用那道菜的照片，没抽就用一张默认菜图垫底，永远不满屏空着 */
+      var heroSrc = cur ? window.DishPhoto.src(cur) : 'assets/dishes/tomato.jpg';
+
+      /* 图上的标题区 */
+      var heroCap;
       if (loading) {
-        slot = '<div style="margin:16px 18px 0"><div class="sk sk-card"></div>' +
-          '<div class="sk sk-line" style="width:58%"></div>' +
-          '<div class="sk sk-line" style="width:44%"></div></div>';
+        heroCap = '<div class="hero-q">正在替你挑…</div>' +
+          '<div class="hero-sub">看口味、忌口和今天的时间</div>';
       } else if (cur) {
-        slot = dishCard(cur);
+        heroCap = '<div class="hero-badges">' +
+            '<span class="badge-no">' + window.D.esc(window.DishPhoto.no(cur)) + '</span>' +
+            '<span class="badge-kind">' + window.D.esc(cur.kind || '家常') + '</span>' +
+            '<span class="badge-kind">' + window.D.esc(cur.season || '四季') + '</span>' +
+          '</div>' +
+          '<div class="hero-q">' + window.D.esc(cur.name) + '</div>' +
+          '<div class="hero-sub">' + window.D.esc(cur.tagline) + '</div>';
       } else {
-        slot = '<div class="empty">' + window.ART.get('cabinet') +
-          '<p>展台上还空着。<br>点上面的藏品柜，让馆长替你挑一件。</p></div>';
+        heroCap = '<div class="hero-q">今天<em>做</em>什么吃？</div>' +
+          '<div class="hero-sub">不知道吃什么、缺什么、怎么下手，搭子替你拿主意</div>';
+      }
+
+      /* 白卡里的下半部分 */
+      var panel;
+      if (loading) {
+        panel = '<div class="sk sk-card"></div>' +
+          '<div class="sk sk-line" style="width:58%"></div>' +
+          '<div class="sk sk-line" style="width:44%"></div>';
+      } else if (cur) {
+        panel = dishBody(cur);
+      } else {
+        panel = '<div class="empty">' + window.D.icon('chef', 'ic-lg') +
+          '<p>灶台上还空着。<br>点下面那块牌子，让搭子替你定。</p></div>';
       }
 
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
+      var meal = today().split(' · ').pop();
 
       return '' +
-        '<div class="home-head">' +
-          '<div class="hi">Museum of Home Cooking · ' + today() + '</div>' +
-          '<div class="t">今日展品</div>' +
-          '<div class="s">不知道吃什么、要买什么、怎么做，馆长替你拿主意</div>' +
+        /* ---------- 满屏主图 ---------- */
+        '<div class="home-hero">' +
+          '<img class="hero-img" src="' + heroSrc + '" alt="">' +
+          '<div class="hero-scrim"></div>' +
+          '<div class="hero-bar">' +
+            window.Brand.logo('light') +
+            '<span class="grow"></span>' +
+            '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>' +
+          '</div>' +
+          '<div class="hero-cap">' + heroCap + '</div>' +
         '</div>' +
 
-        '<div style="padding:14px 18px 0">' +
-          '<div class="field" data-act="toSearch">' +
-            window.D.icon('search', 'ic-sm') +
-            '<span class="muted small">检索馆藏…菜名或食材</span>' +
-            '<span class="chip ochre" style="height:21px">去检索</span>' +
+        /* ---------- 叠在图片上的白色功能卡 ---------- */
+        '<div class="home-panel">' +
+          '<div class="pad">' +
+            '<div class="field" data-act="toSearch">' +
+              window.D.icon('search', 'ic-sm') +
+              '<span class="muted small">搜菜名，或者冰箱里剩下的食材</span>' +
+              '<span class="chip ochre" style="height:22px">去找</span>' +
+            '</div>' +
+          '</div>' +
+
+          '<div class="cabinet' + (loading ? ' shaking' : '') + '" data-act="draw">' +
+            '<div class="tube">' + window.D.icon('chef', 'ic-lg') + '</div>' +
+            '<div class="info">' +
+              '<div class="q">' + (loading ? '搭子正在翻冰箱…' : '还是没想好？让它替你定') + '</div>' +
+              '<div class="sub">会看你的口味、忌口和人数来挑</div>' +
+            '</div>' +
+            '<span class="go">帮我挑</span>' +
+          '</div>' +
+
+          '<div class="pad">' + panel + '</div>' +
+
+          '<div class="pref-strip">' +
+            '<span class="chip">' + spicyTxt + '</span>' +
+            '<span class="chip ochre">' + oilTxt + '</span>' +
+            '<span class="chip brass">' + prefs.people + ' 人吃饭</span>' +
+            (prefs.avoid.length ? prefs.avoid.map(function (a) { return '<span class="chip red">忌 ' + window.D.esc(a) + '</span>'; }).join('') : '') +
+            '<button class="chip plain" data-act="toPref">调整口味</button>' +
           '</div>' +
         '</div>' +
 
-        '<div class="cabinet' + (loading ? ' shaking' : '') + '" data-act="draw">' +
-          '<div class="tube">' + window.ART.get('cabinet') + '</div>' +
-          '<div class="info">' +
-            '<div class="q">' + (loading ? '馆长正在翻藏品柜…' : '不知道吃什么？翻藏品柜') + '</div>' +
-            '<div class="sub">会参考你的口味偏好与忌口来挑</div>' +
-          '</div>' +
-          '<span class="go">抽一件</span>' +
-        '</div>' +
-
-        slot +
-
-        '<div class="pref-strip">' +
-          '<span class="chip">' + spicyTxt + '</span>' +
-          '<span class="chip ochre">' + oilTxt + '</span>' +
-          '<span class="chip brass">' + prefs.people + ' 人吃饭</span>' +
-          (prefs.avoid.length ? prefs.avoid.map(function (a) { return '<span class="chip red">忌 ' + window.D.esc(a) + '</span>'; }).join('') : '') +
-          '<button class="chip plain" data-act="toPref">调整口味</button>' +
-        '</div>' +
-
-        '<div class="sec" style="margin:18px 18px 4px"><h3>常设陈列<span class="hl"> ›</span></h3><span class="more">By Your Taste</span></div>' +
+        '<div class="sec" style="margin:20px 18px 4px"><h3>照你的口味<span class="hl"> ›</span></h3><span class="more">合你胃口的那几道</span></div>' +
         '<div class="hscroll">' +
           guess.map(function (r) {
             return '<div class="mini-dish" data-act="detail" data-id="' + r.id + '">' +
-              '<div class="art">' + window.ART.get(r.art) + '</div>' +
-              '<div class="n">' + window.D.esc(r.name) + '</div>' +
-              '<div class="m">' + window.D.esc(r.no || '') + ' · ' + stars(r.difficulty) + '</div>' +
+              '<div class="ph">' + window.DishPhoto.html(r) + '</div>' +
+              '<div class="b">' +
+                '<div class="n">' + window.D.esc(r.name) + '</div>' +
+                '<div class="m">' + (r.prep + r.cook) + ' 分钟 · ' + level(r.difficulty) + '</div>' +
+              '</div>' +
             '</div>';
           }).join('') +
         '</div>' +
 
-        '<div class="foot-note">做菜这事儿，第一步永远是决定吃什么。<br>已经有答案了就直接检索菜名。</div>';
+        '<div class="foot-note">做菜这事儿，最难的是决定吃什么。<br>心里有答案了就直接搜菜名。</div>';
     },
 
     actions: {
@@ -136,7 +154,7 @@
           cur = r;
           loading = false;
           window.Router.refresh();
-          window.D.toast('抽到「' + r.name + '」');
+          window.D.toast('今晚就吃「' + r.name + '」');
         });
       },
 
@@ -151,7 +169,7 @@
         var n = window.Store.addToShopping(r.ingredients.concat(r.seasonings.map(function (s) {
           return { name: s.name, amount: s.amount, cat: '调料' };
         })), r.name);
-        window.D.toast(n ? '已加入采集清单（' + n + ' 项）' : '清单里已经有了');
+        window.D.toast(n ? '已加进买菜清单（' + n + ' 样）' : '清单里已经有了');
       }
     }
   };
