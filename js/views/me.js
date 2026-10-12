@@ -2,7 +2,7 @@
   var AVOIDS = ['香菜', '葱', '蒜', '花生', '海鲜', '羊肉', '内脏'];
 
   /* 冰箱候选：从菜谱库里按出现频次取，再补上中式厨房的常备项 */
-  function fridgeItems() {
+  function fridge样() {
     var count = {};
     (window.RECIPES || []).forEach(function (r) {
       r.ingredients.concat(r.seasonings).forEach(function (x) { count[x.name] = (count[x.name] || 0) + 1; });
@@ -29,16 +29,16 @@
       var cookCount = Object.keys(st.cooked).reduce(function (a, k) { return a + st.cooked[k]; }, 0);
 
       return '<div class="me-head">' +
-        '<div class="avatar">' + window.ART.get('curator') + '</div>' +
+        '<div class="avatar">' + window.D.icon('chef', 'ic-lg') + '</div>' +
         '<div>' +
-          '<div class="nm">研究员 · 厨房新手</div>' +
-          '<div class="sb">Researcher · 制作过 ' + cookCount + ' 件 · 收藏 ' + st.favorites.length + ' 件</div>' +
+          '<div class="nm">下厨的人 · 还在练手</div>' +
+          '<div class="sb">制作过 ' + cookCount + ' 道菜 · 收藏 ' + st.favorites.length + ' 道</div>' +
         '</div>' +
         '<span class="grow"></span>' +
-        '<button class="chip plain" data-act="goHome">去挑展品</button>' +
+        '<button class="chip plain" data-act="goHome">去挑一道菜</button>' +
       '</div>' +
 
-      '<div class="sec" style="margin:18px 18px 8px"><h3>口味偏好<span class="hl"> ›</span></h3><span class="more">Affects Selection</span></div>' +
+      '<div class="sec" style="margin:18px 18px 8px"><h3>口味偏好<span class="hl"> ›</span></h3><span class="more">会影响推荐和抽签</span></div>' +
       '<div class="pref-card">' +
         '<div class="pref-row"><div class="lbl">能接受的辣度</div>' +
           seg([
@@ -70,7 +70,7 @@
         '<div class="fridge-note" style="padding-top:0">勾上你家现在就有的。之后清单只会补你缺的，' +
         '抽签也会优先推能立刻动手的菜。</div>' +
         '<div class="fridge-opts" style="margin-top:10px">' +
-          fridgeItems().map(function (n) {
+          fridge样().map(function (n) {
             var on = st.fridge.indexOf(n) >= 0;
             return '<button class="chip ' + (on ? 'on' : 'plain') + '" data-act="toggleFridge" data-v="' + window.D.esc(n) + '">' +
               (on ? '有 ' : '') + window.D.esc(n) + '</button>';
@@ -79,18 +79,18 @@
         (st.fridge.length ? '<div style="padding:12px 0 2px"><button class="btn btn-sm" data-act="clearFridge">清空冰箱</button></div>' : '') +
       '</div>' +
 
-      '<div class="sec" style="margin:16px 18px 4px"><h3>我的收藏</h3><span class="more">' + st.favorites.length + ' Items</span></div>' +
+      '<div class="sec" style="margin:16px 18px 4px"><h3>我的收藏</h3><span class="more">' + st.favorites.length + ' 样</span></div>' +
       '<div class="pref-card">' +
         (st.favorites.length ? st.favorites.map(function (id) {
           var r = window.findRecipe(id);
           if (!r) return '';
           return '<div class="rec-row" data-act="detail" data-id="' + r.id + '">' +
-            '<div class="art">' + window.ART.get(r.art) + '</div>' +
+            window.DishPhoto.html(r, 'rec-thumb') +
             '<span class="grow"><span class="n">' + window.D.esc(r.name) + '</span>' +
             '<span class="d">' + window.D.esc(r.no || '') + ' · ' + window.D.esc(r.family || '') + '</span></span>' +
             window.D.icon('right', 'ic-sm') +
           '</div>';
-        }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有收藏，看到喜欢的展品点一下收藏。</div>') +
+        }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有收藏，看到想做的点一下收藏。</div>') +
       '</div>' +
 
       '<div class="sec" style="margin:16px 18px 4px"><h3>制作记录</h3><span class="more">最近 ' + st.history.length + ' 次</span></div>' +
@@ -100,16 +100,16 @@
           if (!r) return '';
           var d = new Date(h.at);
           return '<div class="rec-row" data-act="detail" data-id="' + r.id + '">' +
-            '<div class="art">' + window.ART.get(r.art) + '</div>' +
+            window.DishPhoto.html(r, 'rec-thumb') +
             '<span class="grow"><span class="n">' + window.D.esc(r.name) + '</span>' +
             '<span class="d">' + (d.getMonth() + 1) + '/' + d.getDate() + ' ' +
             (d.getHours() < 10 ? '0' : '') + d.getHours() + ':' + (d.getMinutes() < 10 ? '0' : '') + d.getMinutes() + ' 完成</span></span>' +
             window.D.icon('right', 'ic-sm') +
           '</div>';
-        }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有记录，做完一件展品点「完成了」就会记在这里。</div>') +
+        }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有记录，做完一道菜点「完成了」就会记在这里。</div>') +
       '</div>' +
 
-      '<div class="install-hint"><b>把本馆装进手机</b> —— iOS：Safari 里点<b>分享 › 添加到主屏幕</b>' +
+      '<div class="install-hint"><b>把这个厨房装进手机</b> —— iOS：Safari 里点<b>分享 › 添加到主屏幕</b>' +
       '；Android：浏览器菜单里点<b>添加到主屏幕 / 安装应用</b>。装好后全屏打开，离线也能看。</div>' +
 
       '<div class="foot-note">这是个原型，数据都存在你自己的浏览器里。<br>AI 部分目前用本地模拟，接口层已单独封装，换真实模型改动很小。</div>';
