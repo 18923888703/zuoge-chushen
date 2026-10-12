@@ -299,9 +299,26 @@
   var XM = window.__EXTRA_META || {};
   Object.keys(XM).forEach(function (k) { META[k] = XM[k]; });
 
+  /* 做法分类（厨房说法，替代原来的图鉴科属）：从菜名和步骤里推断 */
+  function kindOf(r) {
+    var s = r.name + ' ' + (r.steps || []).map(function (x) { return x.text; }).join(' ');
+    if (/蒸|汽锅/.test(s)) return '蒸';
+    if (/汤|羹|粥|煲汤/.test(s)) return '汤羹';
+    if (/拌|拍|白灼|凉拌/.test(s)) return '凉拌';
+    if (/炖|焖|烧|卤|红烧|煲/.test(s)) return '炖烧';
+    if (/煎|炸|爆|酥|焗|烤/.test(s)) return '煎炸';
+    if (/面|饭|饼|粥|馒头|饺子/.test(s)) return '主食';
+    if (/炒/.test(s)) return '快炒';
+    return '家常';
+  }
+
   R.forEach(function (r) {
     var m = META[r.id];
     if (m) { Object.keys(m).forEach(function (k) { r[k] = m[k]; }); }
+    if (!r.kind) r.kind = kindOf(r);
+    /* 旧的图鉴字段不再对外展示 */
+    delete r.latin;
+    delete r.annot;
   });
 
   var MAP = {};
