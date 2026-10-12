@@ -29,11 +29,11 @@
       var list = window.Store.get().shopping;
 
       if (!list.length) {
-        return '<div class="page-head"><div class="t">采集清单</div>' +
-          '<div class="s">Collecting List · 先把标本攒齐，再去一趟菜场</div></div>' +
-          '<div class="empty">' + window.ART.get('empty') +
-          '<p>清单还是空的。<br>去挑一件展品，一键把配料都录进来。</p></div>' +
-          '<div style="padding:0 18px"><button class="btn btn-primary btn-block" data-act="goHome">去挑一件展品</button></div>';
+        return '<div class="page-head"><div class="t">买菜清单</div>' +
+          '<div class="s">Collecting List · 先把食材攒齐，再去一趟菜场</div></div>' +
+          '<div class="empty">' + window.D.icon('basket','ic-lg') +
+          '<p>清单还是空的。<br>去挑一道菜，一键把配料都加进来。</p></div>' +
+          '<div style="padding:0 18px"><button class="btn btn-primary btn-block" data-act="goHome">去挑一道菜</button></div>';
       }
 
       var pending = list.filter(function (s) { return !s.done; });
@@ -47,20 +47,20 @@
         if (!items.length) return '';
         return '<div class="sh-group">' +
           '<div class="gh"><span class="dot" style="background:' + c.c + '"></span>' +
-          '<span class="t">' + c.k + '</span><span class="c">' + items.length + ' Items</span></div>' +
+          '<span class="t">' + c.k + '</span><span class="c">' + items.length + ' 样</span></div>' +
           items.map(row).join('') +
         '</div>';
       }).join('');
 
       var haveBox = have.length ? '<div class="sh-group">' +
         '<div class="gh"><span class="dot" style="background:#5C7364"></span>' +
-        '<span class="t">家里已有 · 不用买</span><span class="c">' + have.length + ' Items</span></div>' +
+        '<span class="t">家里已有 · 不用买</span><span class="c">' + have.length + ' 样</span></div>' +
         have.map(row).join('') +
         '</div>' : '';
 
       var doneBox = done.length ? '<div class="sh-group">' +
         '<div class="gh"><span class="dot" style="background:#B3AA98"></span>' +
-        '<span class="t">已采集</span><span class="c">' + done.length + ' Items</span></div>' +
+        '<span class="t">已买菜</span><span class="c">' + done.length + ' 样</span></div>' +
         done.map(function (s) {
           return '<div class="sh-row">' +
             '<button class="cb on" data-act="toggle" data-id="' + s.id + '">' + window.D.icon('check') + '</button>' +
@@ -68,11 +68,11 @@
             '<span class="am line-through">' + window.D.esc(s.amount) + '</span>' +
           '</div>';
         }).join('') +
-        '<div style="padding:10px 0 4px"><button class="btn btn-sm" data-act="clear">清掉已采集的</button></div>' +
+        '<div style="padding:10px 0 4px"><button class="btn btn-sm" data-act="clear">清掉已买菜的</button></div>' +
         '</div>' : '';
 
       return '<div class="page-head">' +
-        '<div class="t">采集清单</div>' +
+        '<div class="t">买菜清单</div>' +
         '<div class="s">Collecting List · 还差 <b style="color:var(--seal)">' + need.length + '</b> 样要买' +
           (have.length ? '，家里已有 ' + have.length + ' 样已替你划出去' : '') + '</div>' +
         '<div style="padding:12px 18px 0">' +
@@ -92,7 +92,7 @@
           '<span>要买的都齐了，剩下的家里都有 —— 可以开做了。</span></div></div>' : '') +
 
         '<div style="padding:6px 18px 24px">' +
-          '<button class="btn btn-block btn-lg" data-act="goHome">再挑一件展品</button>' +
+          '<button class="btn btn-block btn-lg" data-act="goHome">再挑一道菜</button>' +
         '</div>';
     },
 
