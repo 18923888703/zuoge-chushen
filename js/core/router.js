@@ -26,9 +26,16 @@
       var v = this.routes[this.name] || this.routes.home;
       var root = window.D.$(v.container || '#view');
 
-      /* 转场：先给旧页拍快照，再换内容，最后让它滑走 */
+      /* 转场：先给旧页拍快照，再换内容，最后让它滑走。
+         只有真的要播动画（fwd/back）才拍快照——
+         dir='none'（tab 互切 / 原地刷新）拍而不播会让旧页快照永久残留，
+         叠在新页上出现重影。 */
       if (window.Nav) {
-        window.Nav.snapshot();
+        if (dir === 'fwd' || dir === 'back') {
+          window.Nav.snapshot();
+        } else {
+          window.Nav.clear();      /* 兜底：清掉任何历史残留 */
+        }
         window.Nav.reset(root);
       }
 
