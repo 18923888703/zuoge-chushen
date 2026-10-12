@@ -20,7 +20,11 @@
       ? '<span class="pf pf-dy">抖音</span>'
       : '<span class="pf pf-xhs">小红书</span>';
     return '<div class="arch">' +
-      '<span class="cover">' + window.ART.get(v.art) +
+      '<span class="cover dish-cover">' +
+          (function () {
+            var vr = v.recipeId ? window.findRecipe(v.recipeId) : null;
+            return vr ? window.DishPhoto.html(vr) : '<span class="cover-blank">' + window.D.icon('play', 'ic') + '</span>';
+          })() +
         '<span class="dur">' + window.D.esc(v.dur) + '</span></span>' +
       '<span class="grow">' +
         '<span class="vt">' + window.D.esc(v.title) + '</span>' +
@@ -40,17 +44,17 @@
       var body;
 
       if (!searched) {
-        body = '<div class="empty">' + window.ART.get('empty') +
-          '<p>检索一道菜，找到抖音和小红书的影像。<br>命中馆藏的可以直接配齐配料，<br>没命中的会告诉你，不做硬猜。</p></div>' +
+        body = '<div class="empty">' + window.D.icon('search', 'ic-lg') +
+          '<p>搜索一道菜，找到抖音和小红书的视频。<br>命中菜谱库的可以直接配齐配料，<br>没命中的会告诉你，不做硬猜。</p></div>' +
           '<div class="pad"><div class="xs faint center">试试：红烧肉 / 番茄炒蛋 / 十分钟快手菜</div></div>';
       } else if (loading && !results.length) {
         body = '<div class="pad">' +
           '<div class="row" style="gap:8px;margin-bottom:12px">' + window.D.icon('sparkle', 'ic-sm') +
-          '<span class="small muted">AI 正在检索「' + window.D.esc(q) + '」…</span></div>' +
+          '<span class="small muted">AI 正在搜索「' + window.D.esc(q) + '」…</span></div>' +
           '<div class="sk sk-card"></div><div class="sk sk-card"></div><div class="sk sk-card"></div></div>';
       } else {
         body = (recs && recs.length ? '<div class="sec" style="margin:14px 18px 6px">' +
-          '<h3>此菜流派做法<span class="hl"> ›</span></h3><span class="more">By Your Taste</span></div>' +
+          '<h3>换个做法<span class="hl"> ›</span></h3><span class="more">按你的口味排的</span></div>' +
           '<div style="margin:0 18px 12px">' +
           recs[0].variations.map(function (x, i) {
             return '<div class="var-card' + (i === 0 ? ' on' : '') + '">' +
@@ -61,8 +65,8 @@
           '</div>' : '') +
 
           '<div class="sec" style="margin:6px 18px 8px">' +
-          '<h3>检索到 ' + results.length + ' 份影像</h3>' +
-          '<span class="more">' + (loading ? 'Searching…' : 'Click AI to Parse') + '</span></div>' +
+          '<h3>搜索到 ' + results.length + ' 份视频</h3>' +
+          '<span class="more">' + (loading ? '搜索中…' : '点「配齐这道菜」自动配料') + '</span></div>' +
           results.map(card).join('') +
 
           (parsing ? '<div class="parsed"><div class="ph">' + window.D.icon('sparkle', 'ic-sm') +
@@ -70,13 +74,13 @@
             '<div class="sk sk-line" style="width:80%"></div><div class="sk sk-line" style="width:65%"></div>' +
             '<div class="sk sk-line" style="width:72%"></div></div>' : '') +
 
-          /* 没命中馆藏：诚实说明做不到，不再编一套通用模板 */
+          /* 没命中菜谱库：诚实说明做不到，不再编一套通用模板 */
           (parsed && !parsed.matched ? '<div class="parsed">' +
             '<div class="ph">' + window.D.icon('warn', 'ic-sm') +
-            '<span class="t">这道菜不在本馆馆藏里</span></div>' +
+            '<span class="t">这道菜不在现有菜谱里</span></div>' +
             '<div class="honest">' +
             '<p>我没法替你拆这份视频的内容 —— 配料和用量要跟着博主的手走，硬猜会误导你。</p>' +
-            '<p>可以点「去平台看」直接看原视频，或者换个馆藏里有的菜名再搜一次。</p>' +
+            '<p>可以点「去平台看」直接看原视频，或者换个菜谱里有的菜名再搜一次。</p>' +
             '</div>' +
             '<a class="btn btn-primary btn-block" style="margin-top:12px" href="' +
               (results[parseIdx] ? results[parseIdx].url : '#') + '" target="_blank" rel="noopener">' +
@@ -88,7 +92,7 @@
             '<div class="ph">' + window.D.icon('sparkle', 'ic-sm') +
             '<span class="t">参考配料 · ' + window.D.esc(parsed.name) + '</span></div>' +
             '<div class="honest">' +
-            '这份配料来自<b>本馆这道菜的著录</b>，不是从视频里提取的 —— 视频内容要跟着博主的手走，' +
+            '这份配料来自<b>这道菜在菜谱里的数据</b>，不是从视频里提取的 —— 视频内容要跟着博主的手走，' +
             '请以原视频为准，这里的用量当作备料参考。' +
             '</div>' +
             '<div class="src">Matched · ' +
@@ -107,17 +111,17 @@
                   window.D.fmtDur(s.timer.seconds) + '</span>' : '') + '</span></div>';
             }).join('') +
             '<button class="btn btn-primary btn-block" style="margin-top:12px" data-act="addParsed">' +
-              window.D.icon('basket', 'ic-sm') + '把这些加进采集清单</button>' +
+              window.D.icon('basket', 'ic-sm') + '把这些加进买菜清单</button>' +
             '</div>' : '');
       }
 
-      return '<div class="page-head"><div class="t">文献检索</div>' +
-        '<div class="s">Archive Search · 搜菜名找影像，命中馆藏的直接配齐配料</div></div>' +
+      return '<div class="page-head"><div class="t">搜视频学做法</div>' +
+        '<div class="s">搜菜名找视频，菜谱里有的直接配齐配料</div></div>' +
 
         '<div class="search-bar">' +
           '<div class="field">' + window.D.icon('search', 'ic-sm') +
           '<input id="q" placeholder="想吃什么？比如：红烧肉" value="' + window.D.esc(q) + '" data-enter="search">' +
-          '<button class="chip ochre" data-act="search">检索</button></div>' +
+          '<button class="chip ochre" data-act="search">搜索</button></div>' +
         '</div>' +
 
         '<div class="platforms">' +
@@ -128,8 +132,8 @@
         '</div>' +
 
         body +
-        '<div class="foot-note">影像卡片是检索结果入口，点击会跳到对应平台。<br>' +
-          '配料来自本馆著录，不是从视频里提取 —— 请始终以原视频为准。</div>';
+        '<div class="foot-note">视频卡片是搜索结果入口，点击会跳到对应平台。<br>' +
+          '配料来自菜谱数据，不是从视频里提取 —— 请始终以原视频为准。</div>';
     },
 
     actions: {
@@ -173,8 +177,8 @@
 
       addParsed: function () {
         if (!parsed || !parsed.matched) return;
-        var n = window.Store.addToShopping(parsed.ingredients, parsed.name + '（影像著录）');
-        window.D.toast(n ? '已加入采集清单（' + n + ' 项）' : '清单里已经有了');
+        var n = window.Store.addToShopping(parsed.ingredients, parsed.name + '（视频菜谱数据）');
+        window.D.toast(n ? '已加入买菜清单（' + n + ' 项）' : '清单里已经有了');
       }
     }
   };
