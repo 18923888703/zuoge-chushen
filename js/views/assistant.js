@@ -18,7 +18,7 @@
       var dish = ctx.recipe ? ctx.recipe.name : '';
 
       window.App.sheet({
-        title: '馆长答疑',
+        title: '厨房搭子答疑',
         height: '74%',
         body: '<div class="chat" id="chat"></div>',
         footer:
@@ -40,7 +40,7 @@
           var quick = ov.querySelector('#quick');
 
           chat.appendChild(bubble('ai',
-            '<div class="who">Curator</div>' +
+            '<div class="who">厨房搭子</div>' +
             (dish ? '你在做「' + window.D.esc(dish) + '」。' : '') +
             '不懂的随时问 —— 某个调料干嘛用、没有怎么办、还要多久，都能答。'));
 
@@ -50,7 +50,7 @@
             chat.appendChild(bubble('me', window.D.esc(text)));
             input.value = '';
 
-            var b = bubble('ai', '<div class="who">Curator</div><span class="ans"></span><span class="caret"></span>');
+            var b = bubble('ai', '<div class="who">厨房搭子</div><span class="ans"></span><span class="caret"></span>');
             chat.appendChild(b);
             var ans = b.querySelector('.ans');
             ans.style.whiteSpace = 'pre-wrap';
