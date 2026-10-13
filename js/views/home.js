@@ -112,7 +112,7 @@
           '<div class="cabinet' + (loading ? ' shaking' : '') + '" data-act="draw">' +
             '<div class="tube">' + window.D.icon('chef', 'ic-lg') + '</div>' +
             '<div class="info">' +
-              '<div class="q">' + (loading ? '搭子正在翻冰箱…' : '还是没想好？让它替你定') + '</div>' +
+              '<div class="q">' + (loading ? '搭子正在翻冰箱…' : '没想好？让搭子替你定') + '</div>' +
               '<div class="sub">会看你的口味、忌口和人数来挑</div>' +
             '</div>' +
             '<span class="go">帮我挑</span>' +
