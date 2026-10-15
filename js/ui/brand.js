@@ -2,10 +2,13 @@
    用法：window.Brand.logo('light')  // light=压在深色照片上用白字；default=页面底色用墨字
    修改 App 名字只改这里 */
 (function () {
-  /* 徽标内的线稿：厨师帽 + 锅 */
-  var MARK = '<path d="M6.5 12.5c-1.6-1.4-1.4-4 .3-5.3C7 6 7.2 4.5 7.2 4.5s1.6.6 2 2.2c1-.6 2.3-.8 3.3-.4 1.9.7 2.7 2.9 2 4.8"/>' +
-    '<path d="M6.2 12.6h11.6v3.2H6.2z"/>' +
-    '<path d="M7 19.5c0-2.4 2.2-3.7 5-3.7s5 1.3 5 3.7"/>';
+  /* 徽标图形：一个完整独立的厨师帽剪影（不外溢、不被裁切） */
+  var MARK = '<g fill="#FFFFFF" stroke="none">' +
+      '<circle cx="8.6" cy="10.6" r="3.5"/>' +
+      '<circle cx="12" cy="8.9" r="3.9"/>' +
+      '<circle cx="15.4" cy="10.6" r="3.5"/>' +
+      '<rect x="6.6" y="10.8" width="10.8" height="7" rx="1.6"/>' +
+    '</g>';
 
   var NAME_CN = '我是厨神';
   var NAME_EN = 'I AM THE CHEF';
