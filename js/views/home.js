@@ -49,14 +49,16 @@
       var spicyTxt = ['不吃辣', '微辣', '中辣', '重辣'][prefs.spicy];
       var oilTxt = prefs.oil === 'light' ? '少油' : (prefs.oil === 'rich' ? '不忌油' : '正常');
 
-      /* 主图：抽到菜就用那道菜的照片，没抽就用一张默认菜图垫底，永远不满屏空着 */
-      var heroSrc = cur ? window.DishPhoto.src(cur) : 'assets/dishes/tomato.jpg';
+      /* 开场插画：水彩蔬菜装饰带（固定素材） */
+      var heroSrc = 'assets/illust/ill-top.jpg';
+      var slot = {'早饭': '早上', '午饭': '下午', '晚饭': '晚上', '夜宵': '夜宵'}[today().split(' · ').pop()] || '今天';
 
-      /* 图上的标题区 */
-      var heroCap;
+      /* 居中标题区 */
+      var heroCap, cta;
       if (loading) {
         heroCap = '<div class="hero-q">正在替你挑…</div>' +
           '<div class="hero-sub">看口味、忌口和今天的时间</div>';
+        cta = '<button class="hero-cta" data-act="draw" disabled>挑选中…</button>';
       } else if (cur) {
         heroCap = '<div class="hero-badges">' +
             '<span class="badge-no">' + window.D.esc(window.DishPhoto.no(cur)) + '</span>' +
@@ -65,9 +67,11 @@
           '</div>' +
           '<div class="hero-q">' + window.D.esc(cur.name) + '</div>' +
           '<div class="hero-sub">' + window.D.esc(cur.tagline) + '</div>';
+        cta = '<button class="hero-cta" data-act="draw">换一道</button>';
       } else {
-        heroCap = '<div class="hero-q">今天<em>做</em>什么吃？</div>' +
-          '<div class="hero-sub">不知道吃什么、缺什么、怎么下手，搭子替你拿主意</div>';
+        heroCap = '<div class="hero-q">随时准备帮你想好<br>今天<em>' + slot + '</em>吃什么</div>' +
+          '<div class="hero-sub">看冰箱、看口味、看时间，搭子替你拿主意</div>';
+        cta = '<button class="hero-cta" data-act="draw">随机配菜</button>';
       }
 
       /* 白卡里的下半部分 */
@@ -80,23 +84,25 @@
         panel = dishBody(cur);
       } else {
         panel = '<div class="empty">' + window.D.icon('chef', 'ic-lg') +
-          '<p>灶台上还空着。<br>点下面那块牌子，让搭子替你定。</p></div>';
+          '<p>灶台上还空着。<br>点上面的「随机配菜」，让搭子替你定。</p></div>';
       }
 
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
       var meal = today().split(' · ').pop();
 
       return '' +
-        /* ---------- 满屏主图 ---------- */
+        /* ---------- 水彩插画开场 ---------- */
         '<div class="home-hero">' +
           '<img class="hero-img" src="' + heroSrc + '" alt="">' +
           '<div class="hero-scrim"></div>' +
           '<div class="hero-bar">' +
-            window.Brand.logo('light') +
-            '<span class="grow"></span>' +
             '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>' +
           '</div>' +
-          '<div class="hero-cap">' + heroCap + '</div>' +
+          '<div class="hero-cap">' +
+            window.Brand.logo('') +
+            heroCap +
+            cta +
+          '</div>' +
         '</div>' +
 
         /* ---------- 叠在图片上的白色功能卡 ---------- */
@@ -107,15 +113,6 @@
               '<span class="muted small">搜菜名，或者冰箱里剩下的食材</span>' +
               '<span class="chip ochre" style="height:22px">去找</span>' +
             '</div>' +
-          '</div>' +
-
-          '<div class="cabinet' + (loading ? ' shaking' : '') + '" data-act="draw">' +
-            '<div class="tube">' + window.D.icon('chef', 'ic-lg') + '</div>' +
-            '<div class="info">' +
-              '<div class="q">' + (loading ? '搭子正在翻冰箱…' : '没想好？让搭子替你定') + '</div>' +
-              '<div class="sub">会看你的口味、忌口和人数来挑</div>' +
-            '</div>' +
-            '<span class="go">帮我挑</span>' +
           '</div>' +
 
           '<div class="pad">' + panel + '</div>' +
@@ -142,6 +139,7 @@
           }).join('') +
         '</div>' +
 
+        '<img class="ill-corner" src="assets/illust/ill-corner.jpg" alt="">' +
         '<div class="foot-note">做菜这事儿，最难的是决定吃什么。<br>心里有答案了就直接搜菜名。</div>';
     },
 
