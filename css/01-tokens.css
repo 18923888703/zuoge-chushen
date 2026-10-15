@@ -1,43 +1,43 @@
 :root{
-  /* —— 底色：近纯白的画纸，衬托水彩插画 —— */
-  --paper:#FDFDFB;
-  --paper-2:#F4F2EA;
-  --paper-3:#EBE8DE;
-  --paper-deep:#DFDCCF;
+  /* —— 底色：近白的纸面，衬托水彩插画 —— */
+  --paper:#FAF9F5;
+  --paper-2:#F1F0EA;
+  --paper-3:#E7E5DD;
+  --paper-deep:#DBD9CF;
   --card:#FFFFFF;        /* 卡片：纯白 */
   --card-2:#FBFAF5;
   --label:#F1EFE6;
 
-  /* —— 墨：深墨绿，标题字更重 —— */
-  --ink:#333F31;
-  --ink-2:#7A8070;
-  --ink-3:#ADB2A0;
+  /* —— 墨：中性的深墨黑，不带绿 —— */
+  --ink:#1F1F1B;
+  --ink-2:#6B6A63;
+  --ink-3:#A5A39A;
 
   /* —— 线 —— */
-  --line:rgba(51,63,49,.08);
-  --line-2:rgba(51,63,49,.15);
-  --rule:rgba(51,63,49,.30);
-  --line-strong:rgba(51,63,49,.42);
+  --line:rgba(31,31,27,.09);
+  --line-2:rgba(31,31,27,.16);
+  --rule:rgba(31,31,27,.32);
+  --line-strong:rgba(31,31,27,.46);
 
-  /* —— 强调：深墨绿胶囊（按钮 / 选中态） —— */
-  --tomato:#3D4A38;
-  --tomato-soft:#EAF0E4;
+  /* —— 强调：深炭灰胶囊（按钮 / 选中态）—— */
+  --tomato:#2E2E28;
+  --tomato-soft:#ECEBE5;
 
-  /* —— 辅助色：水彩颜料盘，低饱和 —— */
-  --amber:#DCAF62;
-  --amber-soft:#FAF3E2;
-  --leaf:#85A37A;
-  --leaf-soft:#EEF3E7;
-  --clay:#C9906E;
-  --clay-soft:#F8EFE6;
-  --slate:#8E9E96;
-  --slate-soft:#EDF1EC;
+  /* —— 辅助色：水彩颜料盘，低饱和，只做点缀 —— */
+  --amber:#C9A467;
+  --amber-soft:#F7F1E2;
+  --leaf:#7E9070;
+  --leaf-soft:#EDF1E7;
+  --clay:#C08A67;
+  --clay-soft:#F7EEE6;
+  --slate:#8A8F92;
+  --slate-soft:#EBEDEC;
 
   /* —— 主体一律纯色，无装饰渐变 —— */
-  --grad-warm:linear-gradient(135deg,#3D4A38 0%,#3D4A38 100%);
-  --grad-soft:linear-gradient(135deg,#F2F5EC 0%,#F8F4E8 100%);
-  --scrim-top:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 30%);
-  --scrim-bottom:linear-gradient(180deg,rgba(253,253,251,0) 46%,rgba(253,253,251,.9) 88%,#FDFDFB 100%);
+  --grad-warm:linear-gradient(135deg,#2E2E28 0%,#2E2E28 100%);
+  --grad-soft:linear-gradient(135deg,#F0EFE9 0%,#F7F4EA 100%);
+  --scrim-top:linear-gradient(180deg,rgba(250,249,245,.55) 0%,rgba(250,249,245,0) 30%);
+  --scrim-bottom:linear-gradient(180deg,rgba(250,249,245,0) 46%,rgba(250,249,245,.9) 88%,#FAF9F5 100%);
 
   /* 兼容旧变量名 */
   --seal:var(--tomato);
@@ -68,14 +68,17 @@
   --r-sm:9px;
   --pill:999px;
 
-  /* —— 光：极柔和的灰绿影，无彩色投影 —— */
-  --sh:0 2px 10px rgba(70,82,58,.07);
-  --sh-sm:0 1px 3px rgba(70,82,58,.05);
-  --sh-md:0 8px 22px rgba(70,82,58,.08);
-  --sh-lg:0 12px 30px rgba(70,82,58,.10);
+  /* —— 光：极柔和的中性影，无彩色投影 —— */
+  --sh:0 2px 10px rgba(40,40,34,.07);
+  --sh-sm:0 1px 3px rgba(40,40,34,.05);
+  --sh-md:0 8px 22px rgba(40,40,34,.08);
+  --sh-lg:0 12px 30px rgba(40,40,34,.10);
 
-  --frame:inset 0 0 0 1px rgba(63,74,58,.05);
-  --frame-lg:inset 0 0 0 1px rgba(63,74,58,.06);
+  --frame:inset 0 0 0 1px rgba(31,31,27,.05);
+  --frame-lg:inset 0 0 0 1px rgba(31,31,27,.06);
+
+  /* —— 纸纹：铺满屏幕的一层细颗粒，让白底不发死 —— */
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
 }
 
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
