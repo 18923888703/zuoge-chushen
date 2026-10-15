@@ -1,27 +1,27 @@
 :root{
-  /* —— 底色：水彩纸的奶油白，微微偏绿 —— */
-  --paper:#F7F5EB;
-  --paper-2:#EFECDF;
-  --paper-3:#E5E1D0;
-  --paper-deep:#DAD5C2;
-  --card:#FFFEF9;        /* 卡片：暖白，像水彩纸 */
-  --card-2:#FBFAF2;
-  --label:#F0EDDF;
+  /* —— 底色：近纯白的画纸，衬托水彩插画 —— */
+  --paper:#FDFDFB;
+  --paper-2:#F4F2EA;
+  --paper-3:#EBE8DE;
+  --paper-deep:#DFDCCF;
+  --card:#FFFFFF;        /* 卡片：纯白 */
+  --card-2:#FBFAF5;
+  --label:#F1EFE6;
 
-  /* —— 墨：苔绿调的深墨 —— */
-  --ink:#3F4A3A;
+  /* —— 墨：深墨绿，标题字更重 —— */
+  --ink:#333F31;
   --ink-2:#7A8070;
   --ink-3:#ADB2A0;
 
   /* —— 线 —— */
-  --line:rgba(63,74,58,.09);
-  --line-2:rgba(63,74,58,.15);
-  --rule:rgba(63,74,58,.30);
-  --line-strong:rgba(63,74,58,.42);
+  --line:rgba(51,63,49,.08);
+  --line-2:rgba(51,63,49,.15);
+  --rule:rgba(51,63,49,.30);
+  --line-strong:rgba(51,63,49,.42);
 
-  /* —— 强调：治愈叶绿，只用于关键按钮与徽标 —— */
-  --tomato:#6F9163;
-  --tomato-soft:#EBF2E3;
+  /* —— 强调：深墨绿胶囊（按钮 / 选中态） —— */
+  --tomato:#3D4A38;
+  --tomato-soft:#EAF0E4;
 
   /* —— 辅助色：水彩颜料盘，低饱和 —— */
   --amber:#DCAF62;
@@ -33,11 +33,11 @@
   --slate:#8E9E96;
   --slate-soft:#EDF1EC;
 
-  /* —— 渐变：只保留极淡的水彩晕染，按钮等主体一律纯色 —— */
-  --grad-warm:linear-gradient(135deg,#6F9163 0%,#6F9163 100%);
-  --grad-soft:linear-gradient(135deg,#EFF4E8 0%,#F7F3E2 100%);
-  --scrim-top:linear-gradient(180deg,rgba(28,34,24,.36) 0%,rgba(28,34,24,0) 34%);
-  --scrim-bottom:linear-gradient(180deg,rgba(28,34,24,0) 42%,rgba(28,34,24,.70) 100%);
+  /* —— 主体一律纯色，无装饰渐变 —— */
+  --grad-warm:linear-gradient(135deg,#3D4A38 0%,#3D4A38 100%);
+  --grad-soft:linear-gradient(135deg,#F2F5EC 0%,#F8F4E8 100%);
+  --scrim-top:linear-gradient(180deg,rgba(255,255,255,.55) 0%,rgba(255,255,255,0) 30%);
+  --scrim-bottom:linear-gradient(180deg,rgba(253,253,251,0) 46%,rgba(253,253,251,.9) 88%,#FDFDFB 100%);
 
   /* 兼容旧变量名 */
   --seal:var(--tomato);
@@ -86,7 +86,7 @@ body{
   line-height:1.7;
   letter-spacing:.01em;
   color:var(--ink);
-  background:#EAE7DA;
+  background:#E9E6DC;
   display:flex;align-items:center;justify-content:center;
   padding:20px 0;
   -webkit-font-smoothing:antialiased;
