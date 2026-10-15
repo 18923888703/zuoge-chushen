@@ -15,7 +15,7 @@
   border:1px solid rgba(27,26,25,.07);pointer-events:none;
 }
 
-/* —— 屏幕：纯白底，不加任何纹理与光晕 —— */
+/* —— 屏幕：纸白底 + 一层极淡的颗粒纹理 —— */
 .screen{
   position:relative;
   width:100%;height:100%;
@@ -23,6 +23,15 @@
   overflow:hidden;
   background:var(--paper);
   display:flex;flex-direction:column;
+}
+/* 纹理叠加层：盖在最上层但不可点击，只是给画面加一层纸的呼吸感 */
+.screen::after{
+  content:'';position:absolute;inset:0;z-index:4;
+  pointer-events:none;
+  background-image:var(--grain);
+  background-size:180px 180px;
+  mix-blend-mode:multiply;
+  opacity:.5;
 }
 
 .view{
