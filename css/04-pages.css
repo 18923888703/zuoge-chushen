@@ -26,14 +26,16 @@
 .brand.light .brand-mark{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.42), 0 2px 8px rgba(28,34,24,.20)}
 .brand.light .brand-txt i{opacity:.85}
 
-/* ---------- 满屏主图 ---------- */
+/* ---------- 首页开场：水彩插画 + 居中文字 ---------- */
 .home-hero{
-  position:relative;height:330px;overflow:hidden;
-  background:var(--paper-3);
+  position:relative;height:470px;overflow:hidden;
+  background:var(--paper);
 }
 .home-hero .hero-img{
-  width:100%;height:100%;object-fit:cover;display:block;
-  transform:scale(1.04);
+  position:absolute;top:0;left:0;
+  width:100%;height:100%;object-fit:cover;object-position:center top;
+  display:block;
+  mix-blend-mode:multiply;
 }
 .home-hero .hero-scrim{
   position:absolute;inset:0;
@@ -42,34 +44,61 @@
 .hero-bar{
   position:absolute;top:0;left:0;right:0;
   padding:10px 16px 0;
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;justify-content:flex-end;gap:10px;
 }
 .hero-chip{
   display:inline-flex;align-items:center;height:26px;padding:0 11px;
   border-radius:var(--pill);
-  background:rgba(255,255,255,.18);
-  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
-  border:1px solid rgba(255,255,255,.26);
-  color:#FFF;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+  background:rgba(255,255,255,.72);
+  border:1px solid var(--line-2);
+  color:var(--ink-2);font-size:11.5px;font-weight:600;letter-spacing:.02em;
 }
 .hero-cap{
-  position:absolute;left:18px;right:18px;bottom:26px;
-  color:#FFF;
-  text-shadow:0 1px 8px rgba(20,26,16,.32);
+  position:absolute;left:22px;right:22px;top:44%;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;
+  color:var(--ink);
 }
-.hero-badges{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
-.hero-q{font-size:32px;font-weight:700;font-family:var(--serif);letter-spacing:.03em;line-height:1.2}
-.hero-q em{font-style:normal;color:#F5D68C}
-.hero-sub{font-size:12.5px;opacity:.92;margin-top:8px;line-height:1.65}
+.hero-cap .brand{margin-bottom:26px}
+.hero-cap .brand .brand-txt{align-items:center}
+.hero-badges{display:flex;gap:6px;margin-bottom:10px;justify-content:center;flex-wrap:wrap}
+.hero-q{
+  font-size:27px;font-weight:700;font-family:var(--serif);
+  letter-spacing:.06em;line-height:1.42;
+}
+.hero-q em{font-style:normal;color:var(--tomato);border-bottom:2px solid var(--leaf)}
+.hero-sub{font-size:12px;color:var(--ink-2);margin-top:10px;line-height:1.7}
+.hero-cta{
+  margin-top:22px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  height:46px;padding:0 30px;border-radius:var(--pill);
+  background:var(--tomato);color:#FFF;
+  font-size:13.5px;font-weight:600;letter-spacing:.14em;
+  box-shadow:0 3px 10px rgba(51,63,49,.14);
+  transition:opacity .12s ease,transform .12s ease;
+}
+.hero-cta:active{opacity:.8;transform:scale(.97)}
+.hero-cta[disabled]{opacity:.4;pointer-events:none}
+.hero-cta .ic{width:15px;height:15px;stroke:#FFF}
+/* 抽到菜后的徽标：浅底深字 */
+.hero-cap .badge-no{
+  display:inline-flex;align-items:center;height:22px;padding:0 9px;
+  border-radius:var(--pill);background:var(--tomato-soft);color:var(--tomato);
+  font-size:11px;font-weight:700;letter-spacing:.04em;
+}
+.hero-cap .badge-kind{
+  display:inline-flex;align-items:center;height:22px;padding:0 9px;
+  border-radius:var(--pill);background:var(--card);border:1px solid var(--line);
+  color:var(--ink-2);font-size:11px;
+}
 
-/* 叠在图片下方的白色功能卡 */
+/* 白卡功能层：紧接插画下方 */
 .home-panel{
   position:relative;
-  margin-top:-20px;
+  margin-top:-14px;
   background:var(--paper);
   border-radius:var(--r-xl) var(--r-xl) 0 0;
   padding:16px 0 12px;
-  box-shadow:0 -8px 20px rgba(70,82,58,.07);
 }
 
 /* 搜索框：像灶台上的调料罐 */
@@ -504,6 +533,12 @@
 .rec-row .ph img{width:100%;height:100%;object-fit:cover}
 .rec-row .n{font-size:13.5px;font-weight:700}
 .rec-row .d{font-size:11px;color:var(--ink-3);display:block}
+
+/* 水彩角落点缀 */
+.ill-corner{
+  display:block;width:62%;max-width:260px;margin:26px auto -8px;
+  mix-blend-mode:multiply;
+}
 
 .foot-note{
   padding:20px 18px 6px;text-align:center;
