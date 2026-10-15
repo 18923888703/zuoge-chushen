@@ -27,7 +27,14 @@
 
   /* 抽到菜之后：操作区（图上只放名字，细节放白卡里） */
   function dishBody(r) {
-    return '<div class="acts">' +
+    return '<div class="picked">' +
+        '<div class="pk-top">' +
+          '<span class="pk-no">' + window.D.esc(window.DishPhoto.no(r)) + '</span>' +
+          '<span class="pk-n">' + window.D.esc(r.name) + '</span>' +
+        '</div>' +
+        '<div class="pk-sub">' + window.D.esc(r.tagline) + '</div>' +
+      '</div>' +
+      '<div class="acts">' +
         '<button class="btn btn-primary" data-act="cook" data-id="' + r.id + '">现在开做</button>' +
         '<button class="btn" data-act="detail" data-id="' + r.id + '">看菜谱</button>' +
         '<button class="btn btn-ghost" data-act="addList" data-id="' + r.id + '" aria-label="加入买菜清单">' +
@@ -90,14 +97,18 @@
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
       var meal = today().split(' · ').pop();
 
+      /* 抽到菜之后顶部收窄（compact），让菜名和按钮立刻进入视野 */
+      var heroCls = 'home-hero' + (cur ? ' compact' : '');
+      var topRight = cur
+        ? '<button class="hero-chip act" data-act="draw">换一道</button>'
+        : '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>';
+
       return '' +
         /* ---------- 水彩插画开场 ---------- */
-        '<div class="home-hero">' +
+        '<div class="' + heroCls + '">' +
           '<img class="hero-img" src="' + heroSrc + '" alt="">' +
           '<div class="hero-scrim"></div>' +
-          '<div class="hero-bar">' +
-            '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>' +
-          '</div>' +
+          '<div class="hero-bar">' + topRight + '</div>' +
           '<div class="hero-cap">' +
             window.Brand.logo('') +
             heroCap +
