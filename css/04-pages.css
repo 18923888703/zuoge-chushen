@@ -27,11 +27,10 @@
 .brand.light .brand-mark{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.34), 0 2px 8px rgba(28,34,24,.20)}
 .brand.light .brand-txt i{opacity:.85}
 
-/* ---------- 首页开场：水彩插画 + 居中文字 ---------- */
+/* ---------- 首页开场：只留一条水彩装饰带 ---------- */
 .home-hero{
-  position:relative;height:330px;overflow:hidden;
+  position:relative;height:150px;overflow:hidden;
   background:var(--paper);
-  transition:height .22s ease;
 }
 .home-hero .hero-img{
   position:absolute;top:0;left:0;
@@ -43,17 +42,23 @@
   position:absolute;inset:0;
   background:var(--scrim-top), var(--scrim-bottom);
 }
-/* 抽到菜之后：顶部收成一条装饰带，画面立刻让位给菜 */
-.home-hero.compact{height:132px}
-.home-hero.compact .hero-img{opacity:.92}
-.home-hero.compact .hero-scrim{background:var(--scrim-top)}
-.home-hero.compact .hero-cap{display:none}
 .hero-chip.act{
   cursor:pointer;
   background:rgba(255,255,255,.9);
   color:var(--ink);font-weight:700;letter-spacing:.1em;
 }
 .hero-chip.act:active{opacity:.7}
+
+/* 装饰带上只放一枚小 LOGO */
+.hero-cap{
+  position:absolute;left:0;right:0;top:46%;
+  display:flex;justify-content:center;
+}
+.hero-cap .brand{
+  padding:5px 14px;border-radius:var(--pill);
+  background:rgba(255,255,255,.74);
+  -webkit-backdrop-filter:blur(5px);backdrop-filter:blur(5px);
+}
 
 .hero-bar{
   position:absolute;top:0;left:0;right:0;
@@ -67,33 +72,50 @@
   border:1px solid var(--line-2);
   color:var(--ink-2);font-size:11.5px;font-weight:600;letter-spacing:.02em;
 }
-.hero-cap{
-  position:absolute;left:22px;right:22px;top:44%;
-  text-align:center;
-  display:flex;flex-direction:column;align-items:center;
-  color:var(--ink);
-}
-.hero-cap .brand{margin-bottom:26px}
-.hero-cap .brand .brand-txt{align-items:center}
 .hero-badges{display:flex;gap:6px;margin-bottom:10px;justify-content:center;flex-wrap:wrap}
 .hero-q{
   font-size:27px;font-weight:700;font-family:var(--serif);
   letter-spacing:.06em;line-height:1.42;
 }
-.hero-q em{font-style:normal;color:var(--tomato);border-bottom:2px solid var(--leaf)}
-.hero-sub{font-size:12px;color:var(--ink-2);margin-top:10px;line-height:1.7}
-.hero-cta{
-  margin-top:22px;
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
-  height:46px;padding:0 30px;border-radius:var(--pill);
+/* 白卡顶部：标题 + 抽一抽功能块 */
+.home-title{
+  padding:10px 0 10px;
+  font-family:var(--serif);font-size:21px;font-weight:700;
+  letter-spacing:.04em;line-height:1.35;
+}
+.home-title em{font-style:normal;border-bottom:2px solid var(--rule)}
+.home-sub{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--ink-2);margin-top:5px;letter-spacing:.01em;line-height:1.7}
+
+/* 抽一抽：核心功能块 */
+.draw{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 13px;margin-bottom:14px;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+  box-shadow:var(--sh-sm);
+}
+.draw .d-ic{
+  flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+  background:var(--paper-2);
+  display:flex;align-items:center;justify-content:center;color:var(--ink);
+}
+.draw .d-ic .ic{width:19px;height:19px}
+.draw .d-txt{flex:1;min-width:0}
+.draw .d-txt b{display:block;font-size:13.5px;font-weight:700;letter-spacing:.02em}
+.draw .d-txt span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px;line-height:1.6}
+.draw .d-btn{
+  flex:0 0 auto;height:36px;padding:0 18px;border-radius:var(--pill);
   background:var(--tomato);color:#FFF;
-  font-size:13.5px;font-weight:600;letter-spacing:.14em;
-  box-shadow:0 3px 10px rgba(51,63,49,.14);
+  font-size:12.5px;font-weight:600;letter-spacing:.12em;
   transition:opacity .12s ease,transform .12s ease;
 }
-.hero-cta:active{opacity:.8;transform:scale(.97)}
-.hero-cta[disabled]{opacity:.4;pointer-events:none}
-.hero-cta .ic{width:15px;height:15px;stroke:#FFF}
+.draw .d-btn:active{opacity:.82;transform:scale(.96)}
+.draw .d-btn[disabled]{opacity:.45;pointer-events:none}
+.draw.shaking .d-ic{animation:drawShake .5s ease-in-out infinite}
+@keyframes drawShake{
+  0%,100%{transform:rotate(-7deg)}
+  50%{transform:rotate(7deg)}
+}
+.acts{margin-top:2px}
 /* 抽到菜后，白卡顶部直接亮出菜名——不用往上翻才知道做什么 */
 .picked{padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
 .picked .pk-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
