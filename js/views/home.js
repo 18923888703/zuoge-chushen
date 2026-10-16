@@ -60,28 +60,31 @@
       var heroSrc = 'assets/illust/ill-top.jpg';
       var slot = {'早饭': '早上', '午饭': '下午', '晚饭': '晚上', '夜宵': '夜宵'}[today().split(' · ').pop()] || '今天';
 
-      /* 居中标题区 */
-      var heroCap, cta;
+      /* 顶部只留装饰带；标题、抽签、结果全部放进白卡，一屏就能操作 */
+
+      /* 抽一抽：核心功能块，始终在白卡最上方 */
+      var drawCard;
       if (loading) {
-        heroCap = '<div class="hero-q">正在替你挑…</div>' +
-          '<div class="hero-sub">看口味、忌口和今天的时间</div>';
-        cta = '<button class="hero-cta" data-act="draw" disabled>挑选中…</button>';
+        drawCard = '<div class="draw shaking">' +
+            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
+            '<span class="d-txt"><b>正在替你抽…</b><span>看口味、忌口和今天的时间</span></span>' +
+            '<button class="d-btn" data-act="draw" disabled>抽一抽</button>' +
+          '</div>';
       } else if (cur) {
-        heroCap = '<div class="hero-badges">' +
-            '<span class="badge-no">' + window.D.esc(window.DishPhoto.no(cur)) + '</span>' +
-            '<span class="badge-kind">' + window.D.esc(cur.kind || '家常') + '</span>' +
-            '<span class="badge-kind">' + window.D.esc(cur.season || '四季') + '</span>' +
-          '</div>' +
-          '<div class="hero-q">' + window.D.esc(cur.name) + '</div>' +
-          '<div class="hero-sub">' + window.D.esc(cur.tagline) + '</div>';
-        cta = '<button class="hero-cta" data-act="draw">换一道</button>';
+        drawCard = '<div class="draw">' +
+            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
+            '<span class="d-txt"><b>不满意？再抽一道</b><span>搭子有的是备选</span></span>' +
+            '<button class="d-btn" data-act="draw">换一道</button>' +
+          '</div>';
       } else {
-        heroCap = '<div class="hero-q">随时准备帮你想好<br>今天<em>' + slot + '</em>吃什么</div>' +
-          '<div class="hero-sub">看冰箱、看口味、看时间，搭子替你拿主意</div>';
-        cta = '<button class="hero-cta" data-act="draw">随机配菜</button>';
+        drawCard = '<div class="draw">' +
+            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
+            '<span class="d-txt"><b>不知道吃什么？</b><span>点右边抽一抽，按你的口味随机挑一道</span></span>' +
+            '<button class="d-btn" data-act="draw">抽一抽</button>' +
+          '</div>';
       }
 
-      /* 白卡里的下半部分 */
+      /* 结果区 */
       var panel;
       if (loading) {
         panel = '<div class="sk sk-card"></div>' +
@@ -91,42 +94,40 @@
         panel = dishBody(cur);
       } else {
         panel = '<div class="empty">' + window.D.icon('chef', 'ic-lg') +
-          '<p>灶台上还空着。<br>点上面的「随机配菜」，让搭子替你定。</p></div>';
+          '<p>灶台上还空着。<br>先抽一抽，让搭子替你定。</p></div>';
       }
 
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
       var meal = today().split(' · ').pop();
 
-      /* 抽到菜之后顶部收窄（compact），让菜名和按钮立刻进入视野 */
-      var heroCls = 'home-hero' + (cur ? ' compact' : '');
-      var topRight = cur
-        ? '<button class="hero-chip act" data-act="draw">换一道</button>'
-        : '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>';
+      var heroCls = 'home-hero';
+      var topRight = '<span class="hero-chip">' + meal + ' · ' + prefs.people + ' 人</span>';
 
       return '' +
-        /* ---------- 水彩插画开场 ---------- */
+        /* ---------- 水彩插画装饰带 ---------- */
         '<div class="' + heroCls + '">' +
           '<img class="hero-img" src="' + heroSrc + '" alt="">' +
           '<div class="hero-scrim"></div>' +
           '<div class="hero-bar">' + topRight + '</div>' +
-          '<div class="hero-cap">' +
-            window.Brand.logo('') +
-            heroCap +
-            cta +
-          '</div>' +
+          '<div class="hero-cap">' + window.Brand.logo('', { size: 30 }) + '</div>' +
         '</div>' +
 
-        /* ---------- 叠在图片上的白色功能卡 ---------- */
+        /* ---------- 白卡：标题 → 抽一抽 → 结果 ---------- */
         '<div class="home-panel">' +
           '<div class="pad">' +
+            '<div class="home-title">今天<em>' + slot + '</em>吃什么</div>' +
+          '</div>' +
+
+          '<div class="pad">' + drawCard + '</div>' +
+          '<div class="pad">' + panel + '</div>' +
+
+          '<div class="pad" style="margin-top:14px">' +
             '<div class="field" data-act="toSearch">' +
               window.D.icon('search', 'ic-sm') +
               '<span class="muted small">搜菜名，或者冰箱里剩下的食材</span>' +
               '<span class="chip ochre" style="height:22px">去找</span>' +
             '</div>' +
           '</div>' +
-
-          '<div class="pad">' + panel + '</div>' +
 
           '<div class="pref-strip">' +
             '<span class="chip">' + spicyTxt + '</span>' +
