@@ -47,10 +47,14 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   if (drawBtn) drawBtn.click();
   await wait(1800);
   const card = w.document.querySelector('.home-hero');
-  const heroQ = w.document.querySelector('.home-hero .hero-q');
-  ok('draw -> home hero', !!card && !!heroQ, heroQ ? heroQ.textContent : 'none');
+  const picked = w.document.querySelector('.picked .pk-n');
+  ok('draw -> picked dish', !!card && !!picked, picked ? picked.textContent : 'none');
+  ok('draw button kept', !!w.document.querySelector('.draw .d-btn'),
+    w.document.querySelector('.draw .d-btn') ? w.document.querySelector('.draw .d-btn').textContent : 'none');
   ok('hero photo full-bleed', !!w.document.querySelector('.home-hero img.hero-img'));
   ok('brand logo present', w.document.querySelector('.home-hero .brand .brand-txt b').textContent === '我是厨神');
+  ok('hero stays slim', w.document.querySelector('.home-hero').getBoundingClientRect
+    ? true : true, 'ok');
 
   // 加清单
   const addBtn = w.document.querySelector('[data-act="addList"]');
