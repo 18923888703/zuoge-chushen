@@ -79,7 +79,7 @@
       } else {
         drawCard = '<div class="draw">' +
             '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
-            '<span class="d-txt"><b>不知道吃什么？</b><span>点右边抽一抽，按你的口味随机挑一道</span></span>' +
+            '<span class="d-txt"><b>不知道吃什么？</b><span>按你的口味，随机挑一道</span></span>' +
             '<button class="d-btn" data-act="draw">抽一抽</button>' +
           '</div>';
       }
@@ -93,8 +93,7 @@
       } else if (cur) {
         panel = dishBody(cur);
       } else {
-        panel = '<div class="empty">' + window.D.icon('chef', 'ic-lg') +
-          '<p>灶台上还空着。<br>先抽一抽，让搭子替你定。</p></div>';
+        panel = '<div class="empty-hint">先抽一抽，让搭子替你定</div>';
       }
 
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
