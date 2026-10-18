@@ -53,14 +53,14 @@
 .line-through{text-decoration:line-through;text-decoration-thickness:1px;color:var(--ink-3)}
 
 /* ---------- 分区标题 ---------- */
-.sec{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 10px;gap:10px}
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 10px;gap:10px}
 .sec h3{
-  font-size:15px;font-weight:800;letter-spacing:.02em;
-  padding-left:12px;position:relative;
+  font-size:14.5px;font-weight:700;letter-spacing:.03em;
+  padding-left:11px;position:relative;
 }
 .sec h3::before{
   content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);
-  width:4px;height:15px;border-radius:2px;background:var(--grad-warm);
+  width:3px;height:14px;border-radius:2px;background:var(--tomato);
 }
 .sec h3 .hl{color:var(--tomato);margin-left:2px;font-size:12.5px}
 .sec .more{font-size:11px;color:var(--ink-3);white-space:nowrap}
@@ -172,12 +172,14 @@
 .sk-line{height:10px;margin:9px 0}
 .sk-card{height:92px;margin-bottom:12px;border:1px solid var(--line)}
 
-/* ---------- 输入框 ---------- */
+/* ---------- 输入框 / 搜索框（全站唯一定义） ---------- */
 .field{
   display:flex;align-items:center;gap:9px;
-  height:42px;padding:0 13px;border-radius:var(--r-sm);
+  height:44px;padding:0 14px;border-radius:var(--pill);
   background:var(--card);
   border:1px solid var(--line-2);
+  box-shadow:var(--sh-sm);
+  color:var(--ink-2);
 }
 .field input{flex:1;min-width:0;border:0;background:none;outline:none;font-size:13.5px}
 .field input::placeholder{color:var(--ink-3)}
