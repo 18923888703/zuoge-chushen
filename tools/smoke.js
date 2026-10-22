@@ -47,14 +47,25 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   if (drawBtn) drawBtn.click();
   await wait(1800);
   const card = w.document.querySelector('.home-hero');
-  const picked = w.document.querySelector('.picked .pk-n');
+  const picked = w.document.querySelector('.dcard .dc-name');
   ok('draw -> picked dish', !!card && !!picked, picked ? picked.textContent : 'none');
-  ok('draw button kept', !!w.document.querySelector('.draw .d-btn'),
-    w.document.querySelector('.draw .d-btn') ? w.document.querySelector('.draw .d-btn').textContent : 'none');
+  ok('card holds dish photo', !!w.document.querySelector('.dcard .dc-cover .dc-img'));
+  ok('swap button on card', !!w.document.querySelector('.dcard .dc-swap'),
+    w.document.querySelector('.dcard .dc-swap') ? w.document.querySelector('.dcard .dc-swap').textContent : 'none');
   ok('hero photo full-bleed', !!w.document.querySelector('.home-hero img.hero-img'));
   ok('brand logo present', w.document.querySelector('.home-hero .brand .brand-txt b').textContent === '我是厨神');
   ok('hero stays slim', w.document.querySelector('.home-hero').getBoundingClientRect
     ? true : true, 'ok');
+
+  // 点整张卡片 -> 直接进做法详情页（含步骤）
+  const cardEl = w.document.querySelector('.dcard[data-act="detail"]');
+  ok('dish card is tappable', !!cardEl);
+  if (cardEl) cardEl.click();
+  await wait(200);
+  ok('card opens steps page',
+    w.Router.name === 'recipe' && w.document.querySelector('#view').innerHTML.indexOf('怎么一步步做') > 0,
+    w.Router.name + ' / ' + (w.Router.params[0] || 'no id'));
+  w.Router.go('#/home'); await wait(150);
 
   // 加清单
   const addBtn = w.document.querySelector('[data-act="addList"]');
@@ -128,6 +139,17 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   if (inp) inp.value = '红烧肉';
   w.DiscoverView.actions.search();
   await wait(2600);
+  // 搜菜谱：主结果是菜谱列表，点卡片进做法详情
+  const dishCards = w.document.querySelectorAll('.dish-card');
+  ok('discover shows recipe list', dishCards.length >= 1, dishCards.length + ' dishes');
+  ok('recipe cards are tappable', !!w.document.querySelector('.dish-card[data-act="detail"]'));
+  if (dishCards[0]) dishCards[0].click();
+  await wait(220);
+  ok('recipe card opens tutorial page',
+    w.Router.name === 'recipe' && w.document.querySelector('#view').innerHTML.indexOf('怎么一步步做') > 0,
+    w.Router.name + ' / ' + (w.Router.params[0] || 'no id'));
+  w.Router.go('#/discover'); await wait(200);
+
   const arch = w.document.querySelectorAll('.arch');
   ok('discover archive cards', arch.length >= 6, arch.length + ' cards');
 
