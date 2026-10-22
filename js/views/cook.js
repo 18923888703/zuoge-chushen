@@ -114,6 +114,7 @@
           (s.tip ? '<div class="cook-tip">' + window.D.icon('sparkle', 'ic-sm') + ' ' + window.D.esc(s.tip) + '</div>' : '') +
           stepIngs(r, s) +
           '<div id="timer-slot">' + timerBox(r, stepIdx) + '</div>' +
+          '<button class="cook-link" data-act="toRecipe">看完整菜谱与配料</button>' +
         '</div>' +
 
         '<div class="cook-bottom">' +
@@ -143,8 +144,12 @@
       exit: function () {
         if (unsub) { unsub(); unsub = null; }
         try { if (wakeLock && wakeLock.release) { wakeLock.release(); wakeLock = null; } } catch (e) {}
-        window.Router.go('#/home');
+        if (window.Router.canBack()) window.history.back();
+        else window.Router.go('#/home');
       },
+
+      /* 做菜时想回看全部步骤和配料 */
+      toRecipe: function () { window.Router.go('#/recipe/' + window.Router.params[0]); },
 
       prev: function () {
         var r = window.findRecipe(window.Router.params[0]);
