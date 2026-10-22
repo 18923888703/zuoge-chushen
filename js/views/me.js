@@ -38,7 +38,7 @@
         '<button class="chip plain" data-act="goHome">去挑一道菜</button>' +
       '</div>' +
 
-      '<div class="sec" style="margin:18px 18px 8px"><h3>口味偏好<span class="hl"> ›</span></h3><span class="more">会影响推荐和抽签</span></div>' +
+      '<div class="sec"><h3>口味偏好</h3><span class="more">会影响推荐和抽签</span></div>' +
       '<div class="pref-card">' +
         '<div class="pref-row"><div class="lbl">能接受的辣度</div>' +
           seg([
@@ -64,7 +64,7 @@
         '</div>' +
       '</div>' +
 
-      '<div class="sec" style="margin:18px 18px 8px"><h3>我的冰箱<span class="hl"> ›</span></h3>' +
+      '<div class="sec"><h3>我的冰箱</h3>' +
         '<span class="more">已登记 ' + st.fridge.length + ' 样</span></div>' +
       '<div class="pref-card">' +
         '<div class="fridge-note" style="padding-top:0">勾上你家现在就有的。之后清单只会补你缺的，' +
@@ -79,7 +79,7 @@
         (st.fridge.length ? '<div style="padding:12px 0 2px"><button class="btn btn-sm" data-act="clearFridge">清空冰箱</button></div>' : '') +
       '</div>' +
 
-      '<div class="sec" style="margin:16px 18px 4px"><h3>我的收藏</h3><span class="more">' + st.favorites.length + ' 样</span></div>' +
+      '<div class="sec tight"><h3>我的收藏</h3><span class="more">' + st.favorites.length + ' 样</span></div>' +
       '<div class="pref-card">' +
         (st.favorites.length ? st.favorites.map(function (id) {
           var r = window.findRecipe(id);
@@ -93,7 +93,7 @@
         }).join('') : '<div class="xs muted" style="padding:8px 2px">还没有收藏，看到想做的点一下收藏。</div>') +
       '</div>' +
 
-      '<div class="sec" style="margin:16px 18px 4px"><h3>制作记录</h3><span class="more">最近 ' + st.history.length + ' 次</span></div>' +
+      '<div class="sec tight"><h3>制作记录</h3><span class="more">最近 ' + st.history.length + ' 次</span></div>' +
       '<div class="pref-card">' +
         (st.history.length ? st.history.slice(0, 8).map(function (h) {
           var r = window.findRecipe(h.id);
