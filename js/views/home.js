@@ -25,30 +25,8 @@
     return '为什么挑它：' + bits.join('，') + '。';
   }
 
-  /* 抽到菜之后：操作区（图上只放名字，细节放白卡里） */
-  function dishBody(r) {
-    return '<div class="picked">' +
-        '<div class="pk-top">' +
-          '<span class="pk-no">' + window.D.esc(window.DishPhoto.no(r)) + '</span>' +
-          '<span class="pk-n">' + window.D.esc(r.name) + '</span>' +
-        '</div>' +
-        '<div class="pk-sub">' + window.D.esc(r.tagline) + '</div>' +
-      '</div>' +
-      '<div class="acts">' +
-        '<button class="btn btn-primary" data-act="cook" data-id="' + r.id + '">现在开做</button>' +
-        '<button class="btn" data-act="detail" data-id="' + r.id + '">看菜谱</button>' +
-        '<button class="btn btn-ghost" data-act="addList" data-id="' + r.id + '" aria-label="加入买菜清单">' +
-          window.D.icon('plus', 'ic-sm') + '</button>' +
-      '</div>' +
-      '<div class="meta">' +
-        '<span class="chip ochre">' + (r.prep + r.cook) + ' 分钟</span>' +
-        '<span class="chip brass">' + level(r.difficulty) + '</span>' +
-        '<span class="chip slate">' + r.servings + ' 人份</span>' +
-        '<span class="chip">' + window.D.esc(r.origin || '家常') + '</span>' +
-      '</div>' +
-      '<div class="reason">' + window.D.icon('note', 'ic-sm') +
-        '<span>' + window.D.esc(reason(r)) + '</span></div>';
-  }
+  /* （旧 dishBody 已并入一体化抽签卡 .dcard） */
+
 
   var HomeView = {
     render: function () {
@@ -58,42 +36,65 @@
 
       /* 开场插画：水彩蔬菜装饰带（固定素材） */
       var heroSrc = 'assets/illust/ill-top.jpg';
-      var slot = {'早饭': '早上', '午饭': '下午', '晚饭': '晚上', '夜宵': '夜宵'}[today().split(' · ').pop()] || '今天';
 
       /* 顶部只留装饰带；标题、抽签、结果全部放进白卡，一屏就能操作 */
 
-      /* 抽一抽：核心功能块，始终在白卡最上方 */
-      var drawCard;
+      /* ---------- 抽一抽：一体化卡片 ----------
+         卡片本身就是结果：未抽是入口，抽中后整张卡变成那道菜，
+         操作与「换一道」都在卡上，不再拆成两块。 */
+      var card;
       if (loading) {
-        drawCard = '<div class="draw shaking">' +
-            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
-            '<span class="d-txt"><b>正在替你抽…</b><span>看口味、忌口和今天的时间</span></span>' +
-            '<button class="d-btn" data-act="draw" disabled>抽一抽</button>' +
+        card = '<div class="dcard shaking">' +
+            '<div class="dc-cover idle">' +
+              '<span class="dc-mark">' + window.D.icon('chef', 'ic-lg') + '</span>' +
+              '<div class="dc-name">正在替你抽…</div>' +
+            '</div>' +
+            '<div class="dc-body">' +
+              '<div class="dc-tl">看口味、忌口和今天的时间</div>' +
+              '<button class="dc-btn" data-act="draw" disabled>抽一抽</button>' +
+            '</div>' +
           '</div>';
       } else if (cur) {
-        drawCard = '<div class="draw">' +
-            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
-            '<span class="d-txt"><b>不满意？再抽一道</b><span>搭子有的是备选</span></span>' +
-            '<button class="d-btn" data-act="draw">换一道</button>' +
+        /* 整张卡就是这道菜的入口：点卡片任意处 → 菜谱详情（做法步骤） */
+        card = '<div class="dcard" data-act="detail" data-id="' + cur.id + '" role="button" tabindex="0">' +
+            '<div class="dc-cover">' +
+              '<img class="dc-img" src="' + window.DishPhoto.src(cur) + '" alt="' + window.D.esc(cur.name) + '">' +
+              '<div class="dc-veil"></div>' +
+              '<span class="dc-no">' + window.D.esc(window.DishPhoto.no(cur)) + '</span>' +
+              '<span class="dc-go">看做法 ›</span>' +
+              '<div class="dc-name">' + window.D.esc(cur.name) + '</div>' +
+            '</div>' +
+            '<div class="dc-body">' +
+              '<div class="dc-tl">' + window.D.esc(cur.tagline) + '</div>' +
+              '<div class="dc-meta">' +
+                '<span class="chip ochre">' + (cur.prep + cur.cook) + ' 分钟</span>' +
+                '<span class="chip brass">' + level(cur.difficulty) + '</span>' +
+                '<span class="chip slate">' + cur.servings + ' 人份</span>' +
+                '<span class="chip">' + window.D.esc(cur.origin || '家常') + '</span>' +
+              '</div>' +
+              '<div class="dc-why">' + window.D.esc(reason(cur)) + '</div>' +
+              '<div class="dc-acts">' +
+                '<button class="btn btn-primary" data-act="cook" data-id="' + cur.id + '">现在开做</button>' +
+                '<button class="btn btn-ghost" data-act="addList" data-id="' + cur.id + '" aria-label="加入买菜清单">' +
+                  window.D.icon('plus', 'ic-sm') + '</button>' +
+              '</div>' +
+              '<div class="dc-foot">' +
+                '<span class="dc-hint">这一道不合意？</span>' +
+                '<button class="dc-swap" data-act="draw">换一道</button>' +
+              '</div>' +
+            '</div>' +
           '</div>';
       } else {
-        drawCard = '<div class="draw">' +
-            '<span class="d-ic">' + window.D.icon('chef', 'ic') + '</span>' +
-            '<span class="d-txt"><b>不知道吃什么？</b><span>按你的口味，随机挑一道</span></span>' +
-            '<button class="d-btn" data-act="draw">抽一抽</button>' +
+        card = '<div class="dcard">' +
+            '<div class="dc-cover idle">' +
+              '<span class="dc-mark">' + window.D.icon('chef', 'ic-lg') + '</span>' +
+              '<div class="dc-name">今天吃什么？</div>' +
+            '</div>' +
+            '<div class="dc-body">' +
+              '<div class="dc-tl">按你的口味、忌口和人数，随机挑一道</div>' +
+              '<button class="dc-btn" data-act="draw">抽一抽</button>' +
+            '</div>' +
           '</div>';
-      }
-
-      /* 结果区 */
-      var panel;
-      if (loading) {
-        panel = '<div class="sk sk-card"></div>' +
-          '<div class="sk sk-line" style="width:58%"></div>' +
-          '<div class="sk sk-line" style="width:44%"></div>';
-      } else if (cur) {
-        panel = dishBody(cur);
-      } else {
-        panel = '<div class="empty-hint">先抽一抽，让搭子替你定</div>';
       }
 
       var guess = window.RECIPES.filter(function (r) { return !cur || r.id !== cur.id; }).slice(0, 6);
@@ -111,22 +112,17 @@
           '<div class="hero-cap">' + window.Brand.logo('', { size: 30 }) + '</div>' +
         '</div>' +
 
-        /* ---------- 白卡：标题 → 抽一抽 → 结果 ---------- */
+        /* ---------- 白卡：搜索 → 一体化抽签卡 → 口味 ---------- */
         '<div class="home-panel">' +
           '<div class="pad">' +
-            '<div class="home-title">今天<em>' + slot + '</em>吃什么</div>' +
-          '</div>' +
-
-          '<div class="pad">' + drawCard + '</div>' +
-          '<div class="pad">' + panel + '</div>' +
-
-          '<div class="pad" style="margin-top:14px">' +
             '<div class="field" data-act="toSearch">' +
               window.D.icon('search', 'ic-sm') +
               '<span class="muted small">搜菜名，或者冰箱里剩下的食材</span>' +
               '<span class="chip ochre" style="height:22px">去找</span>' +
             '</div>' +
           '</div>' +
+
+          '<div class="pad" style="margin-top:14px">' + card + '</div>' +
 
           '<div class="pref-strip">' +
             '<span class="chip">' + spicyTxt + '</span>' +
@@ -137,7 +133,7 @@
           '</div>' +
         '</div>' +
 
-        '<div class="sec" style="margin:20px 18px 4px"><h3>照你的口味<span class="hl"> ›</span></h3><span class="more">合你胃口的那几道</span></div>' +
+        '<div class="sec"><h3>照你的口味</h3><span class="more">合你胃口的那几道</span></div>' +
         '<div class="hscroll">' +
           guess.map(function (r) {
             return '<div class="mini-dish" data-act="detail" data-id="' + r.id + '">' +
@@ -150,7 +146,7 @@
           }).join('') +
         '</div>' +
 
-        '<img class="ill-corner" src="assets/illust/ill-corner.jpg" alt="">' +
+        '<img class="ill-corner" src="assets/illust/ill-corner-full.jpg" alt="">' +
         '<div class="foot-note">做菜这事儿，最难的是决定吃什么。<br>心里有答案了就直接搜菜名。</div>';
     },
 
