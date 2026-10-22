@@ -1,7 +1,7 @@
 /* 我是厨神 · Service Worker
    策略：网络优先 + 缓存兜底（保证更新能拿到，断网也能开）
    发新版本时把 CACHE 里的版本号 +1 即可强制刷新缓存。 */
-var CACHE = 'chushen-v9';
+var CACHE = 'chushen-v12';
 
 var ASSETS = [
   './',
