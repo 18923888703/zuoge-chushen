@@ -1,8 +1,14 @@
 .cook .fab{display:none!important}
 .pad{padding:0 18px}
 
-/* ============ 页头 ============ */
-.page-head{padding:14px 20px 0;text-align:left}
+/* 可点的东西一律给手型指针，避免「看着能点其实点不动」 */
+[data-act]{cursor:pointer}
+/* 卡片内嵌小标题比分区标题小一号 */
+.sec.sub h3{font-size:12.5px}
+.sec.sub h3::before{height:12px}
+
+/* ============ 页头：左右边距与卡片一致（18px） ============ */
+.page-head{padding:14px 18px 0;text-align:left}
 .page-head .t{font-size:21px;font-weight:800;letter-spacing:.02em}
 .page-head .s{font-size:12px;color:var(--ink-2);margin-top:5px;line-height:1.7}
 
@@ -42,13 +48,6 @@
   position:absolute;inset:0;
   background:var(--scrim-top), var(--scrim-bottom);
 }
-.hero-chip.act{
-  cursor:pointer;
-  background:rgba(255,255,255,.9);
-  color:var(--ink);font-weight:700;letter-spacing:.1em;
-}
-.hero-chip.act:active{opacity:.7}
-
 /* 装饰带上只放一枚小 LOGO */
 .hero-cap{
   position:absolute;left:0;right:0;top:46%;
@@ -73,77 +72,98 @@
   color:var(--ink-2);font-size:11.5px;font-weight:600;letter-spacing:.02em;
 }
 .hero-badges{display:flex;gap:6px;margin-bottom:10px;justify-content:center;flex-wrap:wrap}
-.hero-q{
-  font-size:27px;font-weight:700;font-family:var(--serif);
-  letter-spacing:.06em;line-height:1.42;
-}
-/* 白卡顶部：标题 + 抽一抽功能块 */
-.home-title{
-  padding:10px 0 10px;
-  font-family:var(--serif);font-size:21px;font-weight:700;
-  letter-spacing:.04em;line-height:1.35;
-}
-.home-title em{font-style:normal;border-bottom:2px solid var(--rule)}
-.home-sub{font-family:var(--sans);font-size:12px;font-weight:400;color:var(--ink-2);margin-top:5px;letter-spacing:.01em;line-height:1.7}
-
-/* 抽一抽：核心功能块 */
-.draw{
-  display:flex;align-items:center;gap:12px;
-  padding:12px 13px;margin-bottom:14px;
-  background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+/* 抽一抽：一体化卡片（卡片即结果，按钮始终在卡上） */
+.dcard{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--r-lg);
+  overflow:hidden;
   box-shadow:var(--sh-sm);
 }
-.draw .d-ic{
-  flex:0 0 auto;width:38px;height:38px;border-radius:50%;
+.dc-cover{
+  position:relative;height:196px;overflow:hidden;
   background:var(--paper-2);
-  display:flex;align-items:center;justify-content:center;color:var(--ink);
 }
-.draw .d-ic .ic{width:19px;height:19px}
-.draw .d-txt{flex:1;min-width:0}
-.draw .d-txt b{display:block;font-size:13.5px;font-weight:700;letter-spacing:.02em}
-.draw .d-txt span{display:block;font-size:11px;color:var(--ink-3);margin-top:2px;line-height:1.6}
-.draw .d-btn{
-  flex:0 0 auto;height:36px;padding:0 18px;border-radius:var(--pill);
+.dc-cover .dc-img{width:100%;height:100%;object-fit:cover;display:block}
+.dc-cover .dc-veil{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(24,22,18,.10) 0%,rgba(24,22,18,0) 32%,rgba(24,22,18,0) 46%,rgba(24,22,18,.60) 100%);
+}
+.dc-no{
+  position:absolute;top:12px;left:12px;
+  display:inline-flex;align-items:center;height:22px;padding:0 10px;
+  border-radius:var(--pill);
+  background:rgba(255,255,255,.94);color:var(--ink);
+  font-size:10.5px;font-weight:700;letter-spacing:.06em;
+}
+.dc-name{
+  position:absolute;left:16px;right:16px;bottom:13px;
+  font-family:var(--serif);font-size:26px;font-weight:700;
+  letter-spacing:.05em;line-height:1.3;color:#FFF;
+  text-shadow:0 1px 8px rgba(0,0,0,.35);
+}
+/* 卡片可点：整张进做法页，右上角给个明示 */
+.dcard[data-act]{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dcard[data-act]:active .dc-cover{opacity:.93}
+.dc-go{
+  position:absolute;top:12px;right:12px;
+  display:inline-flex;align-items:center;height:22px;padding:0 10px;
+  border-radius:var(--pill);
+  background:rgba(255,255,255,.94);color:var(--ink);
+  font-size:10.5px;font-weight:700;letter-spacing:.04em;
+}
+
+/* 未抽 / 抽取中：纸纹封面 + 居中 */
+.dc-cover.idle{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+}
+.dc-cover.idle .dc-mark{
+  width:54px;height:54px;border-radius:50%;
+  background:var(--card);border:1px solid var(--line-2);
+  display:flex;align-items:center;justify-content:center;color:var(--ink-2);
+}
+.dc-cover.idle .dc-mark .ic{width:25px;height:25px}
+.dc-cover.idle .dc-name{
+  position:static;left:auto;right:auto;bottom:auto;
+  color:var(--ink);font-size:21px;text-shadow:none;
+}
+
+.dc-body{padding:13px 14px 14px}
+.dc-tl{font-size:12.5px;color:var(--ink-2);line-height:1.7}
+.dc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}
+.dc-why{
+  margin-top:11px;padding:9px 11px;border-radius:var(--r-sm);
+  background:var(--paper-2);
+  font-size:12px;color:var(--ink-2);line-height:1.7;
+}
+.dc-acts{display:flex;gap:8px;margin-top:12px}
+.dc-acts .btn{height:44px}
+.dc-acts .btn-primary,.dc-acts .btn{flex:1}
+.dc-acts .btn-ghost{flex:0 0 auto;padding:0 13px}
+.dc-foot{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--line);
+}
+.dc-hint{font-size:11.5px;color:var(--ink-3)}
+.dc-swap{
+  height:34px;padding:0 18px;border-radius:var(--pill);
   background:var(--tomato);color:#FFF;
-  font-size:12.5px;font-weight:600;letter-spacing:.12em;
+  font-size:12.5px;font-weight:600;letter-spacing:.1em;
   transition:opacity .12s ease,transform .12s ease;
 }
-.draw .d-btn:active{opacity:.82;transform:scale(.96)}
-.draw .d-btn[disabled]{opacity:.45;pointer-events:none}
-.draw.shaking .d-ic{animation:drawShake .5s ease-in-out infinite}
+.dc-swap:active{opacity:.82;transform:scale(.96)}
+.dc-btn{
+  display:block;width:100%;height:46px;margin-top:13px;
+  border-radius:var(--pill);background:var(--tomato);color:#FFF;
+  font-size:13.5px;font-weight:600;letter-spacing:.14em;
+  transition:opacity .12s ease,transform .12s ease;
+}
+.dc-btn:active{opacity:.82;transform:scale(.98)}
+.dc-btn[disabled]{opacity:.45;pointer-events:none}
+.dcard.shaking .dc-mark{animation:drawShake .5s ease-in-out infinite}
 @keyframes drawShake{
   0%,100%{transform:rotate(-7deg)}
   50%{transform:rotate(7deg)}
-}
-/* 未抽签时的轻提示：一行小字，不再占大块面积 */
-.empty-hint{
-  padding:4px 0 0;text-align:center;
-  font-size:11.5px;color:var(--ink-3);letter-spacing:.04em;
-}
-.acts{margin-top:2px}
-/* 抽到菜后，白卡顶部直接亮出菜名——不用往上翻才知道做什么 */
-.picked{padding:0 0 14px;margin-bottom:14px;border-bottom:1px solid var(--line)}
-.picked .pk-top{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
-.picked .pk-no{
-  font-family:var(--en);font-size:10.5px;letter-spacing:.2em;
-  color:var(--ink-3);flex:0 0 auto;
-}
-.picked .pk-n{
-  font-family:var(--serif);font-size:27px;font-weight:700;
-  letter-spacing:.04em;line-height:1.25;
-}
-.picked .pk-sub{font-size:12px;color:var(--ink-2);margin-top:7px;line-height:1.7}
-
-/* 抽到菜后的徽标：浅底深字 */
-.hero-cap .badge-no{
-  display:inline-flex;align-items:center;height:22px;padding:0 9px;
-  border-radius:var(--pill);background:var(--tomato-soft);color:var(--tomato);
-  font-size:11px;font-weight:700;letter-spacing:.04em;
-}
-.hero-cap .badge-kind{
-  display:inline-flex;align-items:center;height:22px;padding:0 9px;
-  border-radius:var(--pill);background:var(--card);border:1px solid var(--line);
-  color:var(--ink-2);font-size:11px;
 }
 
 /* 白卡功能层：紧接插画下方 */
@@ -166,11 +186,6 @@
   background:rgba(44,38,33,.55);color:#FFF8EF;font-size:11px;font-weight:600;
 }
 
-.meta{display:flex;gap:7px;flex-wrap:wrap}
-.acts{display:flex;gap:9px}
-.acts .btn{flex:1}
-.acts .btn-ghost{flex:0 0 auto;padding:0 14px}
-
 /* 为什么挑它 */
 .reason{
   margin-top:13px;padding:11px 13px;
@@ -190,12 +205,14 @@
 .mini-dish{
   flex:0 0 auto;width:124px;
   background:var(--card);
+  border:1px solid var(--line);
   border-radius:var(--r-md);
-  box-shadow:var(--sh-sm);
+  box-shadow:var(--sh);
   overflow:hidden;
   text-align:left;
+  cursor:pointer;
 }
-.mini-dish .ph{width:100%;height:88px;overflow:hidden;background:var(--paper-3)}
+.mini-dish .ph{width:100%;height:104px;overflow:hidden;background:var(--paper-3)}
 .mini-dish .ph img{width:100%;height:100%;object-fit:cover}
 .mini-dish .b{padding:9px 10px 11px}
 .mini-dish .n{font-size:13.5px;font-weight:700;line-height:1.4}
@@ -207,16 +224,13 @@
 /* 做法 / 用时 小标条 */
 .rc-meta{
   display:flex;flex-wrap:wrap;gap:6px;
-  padding:0 20px;margin-top:12px;
+  padding:0 18px;margin-top:12px;
 }
 .rc-meta .m{
   font-size:11.5px;color:var(--ink-2);
   background:var(--paper-2);border-radius:var(--pill);padding:3px 10px;
 }
 .rc-meta .m b{color:var(--ink);font-weight:700}
-
-.rc-title{padding:12px 20px 0}
-.rc-title .tl{font-size:13px;color:var(--ink-2);line-height:1.8}
 
 /* 数据栏：备料 / 火候 / 份量 */
 /* ---------- 菜谱头图：满宽实拍 + 底部压暗衬白字 ---------- */
@@ -420,6 +434,16 @@
 .timer-acts{display:flex;gap:8px;margin-top:16px}
 .timer-box .xs.faint{color:rgba(244,238,224,.5) !important;font-size:11px}
 
+/* 厨房里回看菜谱的入口：弱化处理，不抢「下一步」 */
+.cook-link{
+  align-self:center;margin:10px 0 16px;padding:8px 15px;
+  border-radius:var(--pill);
+  background:rgba(244,238,224,.07);
+  border:1px solid rgba(244,238,224,.22);
+  color:#D8D0BE;font-size:12px;letter-spacing:.06em;
+}
+.cook-link:active{opacity:.7}
+
 .cook-bottom{position:relative;flex:0 0 auto;display:flex;gap:8px;padding:16px 16px 18px;flex-wrap:nowrap}
 .cook-bottom .btn{
   flex:1;min-width:0;height:54px;font-size:16px;letter-spacing:.06em;padding:0 8px;
@@ -441,9 +465,35 @@
 }
 .cook-ask .ic{stroke:#2A241E}
 
-/* ============ 找视频 ============ */
+/* ============ 找菜谱 ============ */
 .search-bar{padding:12px 18px 0}
 .platforms{display:flex;gap:7px;padding:12px 18px 4px}
+
+/* 搜索结果：菜谱卡列表，点整张进做法详情页 */
+.dish-list{padding:0 18px}
+.dish-card{
+  display:flex;align-items:center;gap:12px;
+  padding:11px;margin-bottom:10px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--r-md);
+  box-shadow:var(--sh-sm);
+}
+.dish-card:active{background:var(--card-2)}
+.dish-card .ph{
+  width:76px;height:76px;flex:0 0 auto;
+  border-radius:var(--r-sm);overflow:hidden;background:var(--paper-3);
+}
+.dish-card .b{flex:1;min-width:0}
+.dish-card .n{font-size:14.5px;font-weight:700;letter-spacing:.02em}
+.dish-card .m{font-size:10.5px;color:var(--ink-3);margin-top:2px}
+.dish-card .tl{
+  font-size:12px;color:var(--ink-2);margin-top:5px;line-height:1.7;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.dish-card .tags{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.dish-card .tags .chip{height:21px;font-size:10.5px}
+.dish-card>.ic{color:var(--ink-3);flex:0 0 auto}
 
 .arch{
   display:flex;gap:12px;margin:0 18px 10px;padding:11px;
@@ -459,8 +509,6 @@
 .arch .cover img{width:100%;height:100%;object-fit:cover}
 .cover-blank{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:var(--paper-3);color:var(--ink-3)}
 .rec-thumb{width:44px;height:44px;border-radius:var(--r-sm);object-fit:cover;flex:0 0 auto;background:var(--paper-3)}
-.rec-row .n{font-size:13px;font-weight:600}
-.rec-row .d{display:block;font-size:10.5px;color:var(--ink-3);margin-top:2px}
 .arch .cover .dur{
   position:absolute;right:4px;bottom:4px;background:rgba(44,38,33,.78);color:#FFF;
   font-size:9.5px;padding:1px 5px;border-radius:var(--pill);font-variant-numeric:tabular-nums;
@@ -518,7 +566,7 @@
 }
 
 /* ============ 我的厨房档案 ============ */
-.me-head{padding:16px 20px 4px;display:flex;align-items:center;gap:14px}
+.me-head{padding:16px 18px 4px;display:flex;align-items:center;gap:14px}
 .avatar{
   width:58px;height:58px;flex:0 0 auto;border-radius:50%;
   background:var(--paper-2);
@@ -554,9 +602,9 @@
 .rec-row .n{font-size:13.5px;font-weight:700}
 .rec-row .d{font-size:11px;color:var(--ink-3);display:block}
 
-/* 水彩角落点缀 */
+/* 水彩角落点缀：完整展示，不做任何裁切 */
 .ill-corner{
-  display:block;width:46%;max-width:210px;margin:20px auto -6px;
+  display:block;width:52%;max-width:220px;margin:22px auto 0;
   mix-blend-mode:multiply;
 }
 
@@ -566,7 +614,8 @@
 }
 
 /* ============ 我的冰箱 / 备料抵扣 ============ */
-.have{
+/* 家里有：配料行与清单行共用同一枚小标 */
+.have,.sh-have{
   display:inline-block;margin-left:6px;padding:2px 8px;
   background:var(--olive-soft);color:var(--olive);
   border-radius:var(--pill);font-size:10.5px;font-weight:600;
@@ -575,25 +624,12 @@
 .ing-row .a.dim{color:var(--ink-3);text-decoration:line-through}
 .fridge-opts{display:flex;flex-wrap:wrap;gap:7px;padding:2px 0 0}
 .fridge-note{font-size:12px;color:var(--ink-2);line-height:1.8;padding:8px 2px 0}
-.sh-have{
-  display:inline-block;margin-left:6px;padding:2px 8px;
-  background:var(--olive-soft);color:var(--olive);
-  border-radius:var(--pill);font-size:10.5px;font-weight:600;
-}
 
-/* ============ 丰富度：给内容卡片统一加柔和阴影 ============ */
-.ing-card,.pref-card,.var-card,.stat-row,.sh-group,.parsed,.recipe-card{
+/* ============ 卡片阴影：全站统一一档 ============ */
+.ing-card,.pref-card,.var-card,.stat-row,.sh-group,.parsed{
   box-shadow:var(--sh-sm);
   border-color:var(--line);
 }
-/* 横向小卡片：图更大、卡片更立体 */
-.mini-dish{
-  border-color:var(--line);
-  box-shadow:var(--sh);
-}
-.mini-dish .ph{height:104px}
+/* 横向小卡片：按下去有一点回应 */
 .mini-dish .ph img{transition:transform .4s ease}
 .mini-dish:active .ph img{transform:scale(1.06)}
-/* 口味/忌口条：更亮的底色让白卡跳出来 */
-.reason{background:var(--grad-soft);color:#7A5A2B}
-.reason .ic{color:var(--amber)}
