@@ -104,7 +104,7 @@
           '<div class="reason" style="margin:0">' + window.D.icon('note', 'ic-sm') +
           '<span>用量已按 <b>' + people + ' 人</b> 换算（原谱基准 ' + r.servings + ' 人）。</span></div></div>' : '') +
 
-        '<div class="sec" style="margin:18px 18px 8px"><h3>备料情况<span class="hl"> ›</span></h3>' +
+        '<div class="sec"><h3>备料情况</h3>' +
           '<span class="more">' + (miss.length ? '还差 ' + miss.length + ' 样' : '冰箱齐了') + ' / 共 ' + total + '</span></div>' +
         '<div class="ing-card">' +
           '<div class="ing-group">' +
@@ -123,10 +123,10 @@
             window.D.icon('basket', 'ic-sm') + '只把缺的加进清单</button>' +
         '</div>' +
 
-        (r.flavor ? '<div class="sec" style="margin:20px 18px 8px"><h3>这道菜的口味<span class="hl"> ›</span></h3><span class="more">咸甜酸鲜辣油</span></div>' +
+        (r.flavor ? '<div class="sec"><h3>这道菜的口味</h3><span class="more">咸甜酸鲜辣油</span></div>' +
         flavorRow(r) : '') +
 
-        '<div class="sec" style="margin:20px 18px 8px"><h3>换个做法<span class="hl"> ›</span></h3><span class="more">按你的口味排的</span></div>' +
+        '<div class="sec"><h3>换个做法</h3><span class="more">按你的口味排的</span></div>' +
         r.variations.map(function (x, i) {
           return '<div class="var-card' + (i === varIdx ? ' on' : '') + '" data-act="pickVar" data-i="' + i + '">' +
             '<div class="vh"><span class="vn">' + window.D.esc(x.title) + '</span>' +
@@ -136,7 +136,7 @@
           '</div>';
         }).join('') +
 
-        '<div class="sec" style="margin:16px 18px 6px"><h3>怎么一步步做</h3><span class="more">' + r.steps.length + ' 步</span></div>' +
+        '<div class="sec tight"><h3>怎么一步步做</h3><span class="more">' + r.steps.length + ' 步</span></div>' +
         '<div class="ing-card">' +
           r.steps.map(function (s, i) {
             return '<div class="step-item">' +
@@ -150,7 +150,7 @@
           }).join('') +
         '</div>' +
 
-        '<div class="sec" style="margin:20px 18px 8px"><h3>看别人怎么做<span class="hl"> ›</span></h3><span class="more">视频与图文</span></div>' +
+        '<div class="sec"><h3>看别人怎么做</h3><span class="more">视频与图文</span></div>' +
         '<div class="arch" style="cursor:pointer" data-act="openDy" data-id="' + r.id + '">' +
           '<span class="cover">' + window.DishPhoto.html(r) + '<span class="dur">视频</span></span>' +
           '<span class="grow">' +
@@ -177,7 +177,11 @@
     mount: function () {},
 
     actions: {
-      back: function () { window.Router.go('#/home'); },
+      /* 从哪儿来回哪儿去：收藏页进来的返回收藏页，而不是一律弹回首页 */
+      back: function () {
+        if (window.Router.canBack()) window.history.back();
+        else window.Router.go('#/home');
+      },
       cook: function (d) { window.Router.go('#/cook/' + d.id); },
       detail: function (d) { window.Router.go('#/recipe/' + d.id); },
 
