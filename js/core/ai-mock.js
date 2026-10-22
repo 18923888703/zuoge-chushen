@@ -108,18 +108,31 @@
       });
     },
 
+    /* 搜菜谱：菜名 / 一句话 / 菜系做法 / 口味 / 食材 都能命中。
+       搜不到就如实返回空 —— 不再用「随便给你几道」假装搜到了。 */
     recommend: function (name) {
-      return sleep(500).then(function () {
+      return sleep(460).then(function () {
         var q = String(name || '').replace(/\s/g, '');
+        if (!q) return [];
         var prefs = window.Store.get().prefs;
         var hits = window.RECIPES.filter(function (r) {
-          return r.name.indexOf(q) >= 0 || q.indexOf(r.name) >= 0 ||
-            r.flavors.some(function (f) { return q.indexOf(f) >= 0; }) ||
-            r.ingredients.some(function (i) { return q.indexOf(i.name) >= 0; });
+          if (r.name.indexOf(q) >= 0 || q.indexOf(r.name) >= 0) return true;
+          if ((r.tagline || '').indexOf(q) >= 0) return true;
+          if ((r.origin || '').indexOf(q) >= 0 || (r.kind || '').indexOf(q) >= 0) return true;
+          if (r.flavors.some(function (f) { return f.indexOf(q) >= 0 || q.indexOf(f) >= 0; })) return true;
+          if (r.ingredients.concat(r.seasonings).some(function (x) {
+            return q.indexOf(x.name) >= 0 || x.name.indexOf(q) >= 0;
+          })) return true;
+          return false;
         });
-        if (!hits.length) hits = window.RECIPES.slice();
-        hits.sort(function (a, b) { return score(b, prefs) - score(a, prefs); });
-        return hits.slice(0, 4);
+        /* 菜名直接命中的排前面，其余按口味匹配度排 */
+        hits.sort(function (a, b) {
+          var na = a.name.indexOf(q) >= 0 ? 0 : 1;
+          var nb = b.name.indexOf(q) >= 0 ? 0 : 1;
+          if (na !== nb) return na - nb;
+          return score(b, prefs) - score(a, prefs);
+        });
+        return hits.slice(0, 12);
       });
     },
 
