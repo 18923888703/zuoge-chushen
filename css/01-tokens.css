@@ -1,0 +1,128 @@
+:root{
+  /* —— 底色：近白的纸面，衬托水彩插画 —— */
+  --paper:#FAF9F5;
+  --paper-2:#F1F0EA;
+  --paper-3:#E7E5DD;
+  --paper-deep:#DBD9CF;
+  --card:#FFFFFF;        /* 卡片：纯白 */
+  --card-2:#FBFAF5;
+  --label:#F1EFE6;
+
+  /* —— 墨：中性的深墨黑，不带绿 —— */
+  --ink:#1F1F1B;
+  --ink-2:#6B6A63;
+  --ink-3:#A5A39A;
+
+  /* —— 线 —— */
+  --line:rgba(31,31,27,.09);
+  --line-2:rgba(31,31,27,.16);
+  --rule:rgba(31,31,27,.32);
+  --line-strong:rgba(31,31,27,.46);
+
+  /* —— 强调：深炭灰胶囊（按钮 / 选中态）—— */
+  --tomato:#2E2E28;
+  --tomato-soft:#ECEBE5;
+
+  /* —— 辅助色：水彩颜料盘，低饱和，只做点缀 —— */
+  --amber:#C9A467;
+  --amber-soft:#F7F1E2;
+  --leaf:#7E9070;
+  --leaf-soft:#EDF1E7;
+  --clay:#C08A67;
+  --clay-soft:#F7EEE6;
+  --slate:#8A8F92;
+  --slate-soft:#EBEDEC;
+
+  /* —— 主体一律纯色，无装饰渐变 —— */
+  --grad-warm:linear-gradient(135deg,#2E2E28 0%,#2E2E28 100%);
+  --grad-soft:linear-gradient(135deg,#F0EFE9 0%,#F7F4EA 100%);
+  --scrim-top:linear-gradient(180deg,rgba(250,249,245,.55) 0%,rgba(250,249,245,0) 30%);
+  --scrim-bottom:linear-gradient(180deg,rgba(250,249,245,0) 46%,rgba(250,249,245,.9) 88%,#FAF9F5 100%);
+
+  /* 兼容旧变量名 */
+  --seal:var(--tomato);
+  --seal-soft:var(--tomato-soft);
+  --brass:var(--amber);
+  --brass-soft:var(--amber-soft);
+  --sage:var(--leaf);
+  --sage-soft:var(--leaf-soft);
+  --ochre:var(--amber);
+  --ochre-soft:var(--amber-soft);
+  --wood:var(--clay);
+  --wood-soft:var(--clay-soft);
+  --butter:var(--amber);
+  --butter-soft:var(--amber-soft);
+  --olive:var(--leaf);
+  --olive-soft:var(--leaf-soft);
+  --plum:#8A6A74;
+
+  /* —— 字体 —— */
+  --sans:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --serif:"Kaiti SC","STKaiti","KaiTi","Songti SC","Noto Serif CJK SC",serif;
+  --en:var(--sans);
+
+  /* —— 形：更大的圆角，带一点手绘的松弛感 —— */
+  --r-xl:20px;
+  --r-lg:15px;
+  --r-md:12px;
+  --r-sm:9px;
+  --pill:999px;
+
+  /* —— 光：极柔和的中性影，无彩色投影 —— */
+  --sh:0 2px 10px rgba(40,40,34,.07);
+  --sh-sm:0 1px 3px rgba(40,40,34,.05);
+  --sh-md:0 8px 22px rgba(40,40,34,.08);
+  --sh-lg:0 12px 30px rgba(40,40,34,.10);
+
+  --frame:inset 0 0 0 1px rgba(31,31,27,.05);
+  --frame-lg:inset 0 0 0 1px rgba(31,31,27,.06);
+
+  /* —— 纸纹：铺满屏幕的一层细颗粒，让白底不发死 —— */
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.42'/%3E%3C/svg%3E");
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{
+  font-family:var(--sans);
+  font-size:14px;
+  line-height:1.7;
+  letter-spacing:.01em;
+  color:var(--ink);
+  background:#E9E6DC;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px 0;
+  -webkit-font-smoothing:antialiased;
+}
+button,input,textarea{font-family:inherit;font-size:inherit;color:inherit;letter-spacing:inherit}
+button{border:0;background:none;padding:0;cursor:pointer}
+a{color:inherit;text-decoration:none}
+ul{margin:0;padding:0;list-style:none}
+h1,h2,h3,p{margin:0}
+img{display:block;max-width:100%}
+
+.muted{color:var(--ink-2)}
+.faint{color:var(--ink-3)}
+.small{font-size:12.5px}
+.xs{font-size:11.5px}
+.xxs{font-size:10.5px}
+.center{text-align:center}
+.row{display:flex;align-items:center}
+.between{display:flex;align-items:center;justify-content:space-between}
+.grow{flex:1;min-width:0}
+.nowrap{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.b{font-weight:600}
+
+/* 英文小标：轻量说明字 */
+.en{font-size:10.5px;color:var(--ink-3);letter-spacing:.02em}
+.num{font-variant-numeric:tabular-nums}
+.cn{letter-spacing:.02em}
+
+.tag{font-size:11px;color:var(--ink-2)}
+
+.ic{width:17px;height:17px;flex:0 0 auto;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.ic-sm{width:14px;height:14px}
+.ic-lg{width:21px;height:21px}
+
+::-webkit-scrollbar{width:0;height:0}
+[hidden]{display:none !important}

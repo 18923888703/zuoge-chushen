@@ -1,0 +1,71 @@
+.stage{position:relative}
+
+/* —— 手机外壳：中性浅灰（只在桌面原型态出现） —— */
+.phone{
+  position:relative;
+  width:375px;height:812px;
+  border-radius:26px;
+  background:#E3E3E1;
+  padding:11px;
+  box-shadow:0 24px 54px rgba(26,24,20,.14), inset 0 0 0 1px rgba(255,255,255,.6);
+  flex:0 0 auto;
+}
+.phone::after{
+  content:'';position:absolute;inset:4px;border-radius:22px;
+  border:1px solid rgba(27,26,25,.07);pointer-events:none;
+}
+
+/* —— 屏幕：纸白底 + 一层极淡的颗粒纹理 —— */
+.screen{
+  position:relative;
+  width:100%;height:100%;
+  border-radius:18px;
+  overflow:hidden;
+  background:var(--paper);
+  display:flex;flex-direction:column;
+}
+/* 纹理叠加层：盖在最上层但不可点击，只是给画面加一层纸的呼吸感 */
+.screen::after{
+  content:'';position:absolute;inset:0;z-index:4;
+  pointer-events:none;
+  background-image:var(--grain);
+  background-size:180px 180px;
+  mix-blend-mode:multiply;
+  opacity:.5;
+}
+
+.view{
+  position:relative;z-index:1;
+  flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:14px;
+}
+
+.statusbar{
+  position:relative;z-index:3;
+  height:42px;flex:0 0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink-2);
+}
+.statusbar .sb-right{display:flex;align-items:center;gap:8px}
+.statusbar .sb-mark{font-size:9.5px;letter-spacing:.1em;color:var(--ink-3)}
+.statusbar .bat{width:20px;height:10px;border:1px solid var(--rule);border-radius:2px;position:relative}
+.statusbar .bat::after{content:'';position:absolute;top:2px;left:-3.5px;width:2px;height:4px;background:var(--rule);border-radius:0 1px 1px 0}
+.statusbar .bat i{position:absolute;inset:1.5px;right:5px;background:var(--ink-2);border-radius:1px}
+
+/* ============ 简约容器件 ============ */
+
+/* 分隔线：统一细实线 */
+.dash-soft{border:0;border-top:1px solid var(--line);margin:12px 0}
+
+/* —— 菜品实拍照片 —— */
+.dish-photo{
+  width:100%;height:100%;
+  object-fit:cover;
+  display:block;
+  background:var(--paper-3);
+}
+
+@media (max-height:880px){ .phone{transform:scale(.9)} }
+@media (max-height:780px){ .phone{transform:scale(.8)} }
+@media (max-height:680px){ .phone{transform:scale(.7)} }

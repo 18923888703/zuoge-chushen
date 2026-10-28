@@ -1,0 +1,13 @@
+# WorkBuddy 内部状态与记忆，不入库
+.workbuddy/
+**/.DS_Store
+node_modules/
+npm-debug.log*
+*.local
+
+# 测试依赖（本地即可，不随站点发布）
+tools/node_modules/
+
+# 本地部署脚本（含本机绝对路径，不入库）
+*.command
+.deploy_token
