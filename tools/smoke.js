@@ -147,6 +147,26 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     !!c2 && c2.innerHTML.indexOf('第 1 步 /') >= 0 && !c2.querySelector('.cook-resume'),
     c2 ? (c2.innerHTML.match(/第 \d+ 步 \/ 共 \d+ 步/) || ['none'])[0] : '');
 
+  // 做完这道菜 -> 名下的计时必须一并清掉（不能继续在底部倒数）
+  const t0 = w.document.querySelector('[data-act="startTimer"]');
+  ok('step1 timer startable', !!t0);
+  if (t0) t0.click();
+  await wait(150);
+  ok('timer running before finish', w.Timers.list().filter(t => !t.done).length >= 1,
+    w.Timers.list().length + ' timers');
+  for (let i = 0; i < 20; i++) {
+    const nb = w.document.querySelector('[data-act="next"]');
+    if (!nb) break;
+    if (nb.textContent.trim() === '做完了') { nb.click(); break; }
+    nb.click(); await wait(60);
+  }
+  await wait(200);
+  ok('finish clears dish timers', w.Timers.list().length === 0,
+    JSON.stringify(w.Timers.list().map(t => t.label)));
+  ok('mini timer gone after finish', w.document.querySelector('#mini-timer').hidden === true);
+  ok('finish lands on profile', w.Router.name === 'me', w.Router.name);
+  w.Router.go('#/home'); await wait(120);
+
   // 馆长答疑
   w.Assistant.open('料酒是干嘛的？');
   await wait(1400);

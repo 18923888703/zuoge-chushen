@@ -33,20 +33,27 @@
 
   function remaining(t) { return Math.max(0, (t.endsAt - Date.now()) / 1000); }
 
+  /* 响过之后还挂在列表里没人管的计时，十分钟后自动收掉，
+     免得「时间到」永远吊在底部、也让下一道菜的进度判断不受干扰 */
+  var DONE_TTL = 10 * 60 * 1000;
+
   function loop() {
-    var fired = false;
+    var dirty = false;
     Object.keys(map).forEach(function (id) {
       var t = map[id];
-      if (t.done) return;
+      if (t.done) {
+        if (Date.now() - t.endsAt > DONE_TTL) { delete map[id]; dirty = true; }
+        return;
+      }
       if (remaining(t) <= 0) {
         t.done = true;
-        fired = true;
+        dirty = true;
         window.D.toast('「' + t.label + '」时间到，快去看看！', 2600);
         window.D.haptic();
         beep();
       }
     });
-    if (fired) { save(); notify('done'); }
+    if (dirty) { save(); notify('done'); }
     notify('tick');
   }
 

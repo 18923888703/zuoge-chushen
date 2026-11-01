@@ -14,6 +14,17 @@
     return -1;
   }
 
+  /* 收尾：这道菜名下还挂着的计时全部清掉。
+     之前「做完了」只记账不清表，计时会在底部继续跑、再进这道菜还会接着倒数 */
+  function clearDishTimers(r) {
+    var n = 0;
+    for (var i = 0; i < r.steps.length; i++) {
+      var id = tid(r.id, i);
+      if (window.Timers.get(id)) { window.Timers.stop(id); n++; }
+    }
+    return n;
+  }
+
   /* 厨房模式下计时器用暖金色，深色底上比朱砂更醒目 */
   var RING = '#E8C77A';
   var RING_DONE = '#8FBF7A';
@@ -163,12 +174,15 @@
           stepIdx++;
           window.Router.refresh();
         } else {
+          /* 整道菜结束：这道菜的计时（含之前几步没停的）一并收掉 */
+          var stopped = clearDishTimers(r);
           window.Store.logCook(r.id);
-          window.D.toast('「' + r.name + '」完成，记进你的做菜本了', 2400);
+          window.D.toast('「' + r.name + '」完成，记进你的做菜本了' +
+            (stopped ? ' · 顺手结束了 ' + stopped + ' 个计时' : ''), 2600);
           if (unsub) { unsub(); unsub = null; }
           try { if (wakeLock && wakeLock.release) { wakeLock.release(); wakeLock = null; } } catch (e) {}
           stepIdx = 0;
-            resumed = false;
+          resumed = false;
           window.Router.go('#/me');
         }
       },
