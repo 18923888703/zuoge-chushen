@@ -208,6 +208,83 @@
 .dots i:nth-child(3){animation-delay:.28s}
 @keyframes dotBounce{0%,60%,100%{opacity:.32;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 
+/* ============ 视频拆解卡（分享进来的视频） ============ */
+.vcard{
+  margin-top:11px;
+  background:var(--card);border:1px solid var(--line);
+  border-radius:var(--r-md);overflow:hidden;
+}
+.vhead{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;background:var(--paper-2);
+  border-bottom:1px solid var(--line);
+}
+.vplat{
+  flex:0 0 auto;height:20px;padding:0 8px;border-radius:var(--pill);
+  background:var(--ink);color:#FFF;font-size:10.5px;font-weight:600;letter-spacing:.04em;
+  display:inline-flex;align-items:center;
+}
+.vtitle{
+  font-size:12px;line-height:1.5;color:var(--ink-2);
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+  overflow:hidden;min-width:0;
+}
+.vbody{padding:11px 12px 12px}
+.vdish{
+  font-family:var(--serif);font-size:18px;font-weight:700;color:var(--ink);
+  display:flex;align-items:baseline;gap:7px;flex-wrap:wrap;
+}
+.vguess{
+  font-family:var(--sans);font-size:10.5px;font-weight:500;
+  padding:2px 7px;border-radius:var(--pill);
+  background:var(--amber-soft);color:#9A6A18;
+}
+.vsec{font-size:12px;color:var(--ink-2);line-height:1.7;margin-top:3px}
+.vmeta{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.vlabel{
+  font-size:10.5px;color:var(--ink-3);letter-spacing:.1em;
+  margin:12px 0 7px;
+}
+.vings{display:flex;flex-wrap:wrap;gap:5px}
+.vings .chip{cursor:pointer}
+.vings .chip.plain{cursor:default;background:var(--paper-2)}
+.vsteps{border-top:1px solid var(--line)}
+.vstep{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--line)}
+.vstep:last-child{border-bottom:0}
+.vstep .i{
+  flex:0 0 auto;width:18px;height:18px;border-radius:50%;
+  background:var(--paper-2);color:var(--ink-2);
+  font-size:10.5px;font-variant-numeric:tabular-nums;
+  display:flex;align-items:center;justify-content:center;margin-top:2px;
+}
+.vstep .x{font-size:12.5px;line-height:1.8;min-width:0}
+.vt,.vtip{display:block;margin-top:3px;font-size:11px;color:var(--ink-3)}
+.vt .ic,.vtip .ic{width:12px;height:12px;vertical-align:-1px;margin-right:3px}
+.vmore{
+  margin-top:8px;padding:0;border:0;background:none;
+  font-size:12px;color:var(--ink-2);font-weight:500;text-decoration:underline;
+  text-underline-offset:3px;
+}
+.vacts{display:flex;gap:8px;margin-top:12px}
+.vacts .btn{height:38px;font-size:13px}
+.vacts .btn-ghost{flex:0 0 44px}
+.vmiss{font-size:12.5px;line-height:1.8;color:var(--ink-2)}
+.vmiss.ask{margin-top:9px;color:var(--ink-3);font-size:12px}
+.vnote{
+  display:flex;gap:6px;margin-top:11px;padding:8px 10px;
+  background:var(--paper-2);border-radius:var(--r-sm);
+  font-size:11px;line-height:1.75;color:var(--ink-3);
+}
+.vnote .ic{flex:0 0 auto;width:13px;height:13px;margin-top:2px}
+/* 来源标记：用户气泡下的一行小字 */
+.mshare{
+  display:flex;align-items:center;gap:4px;
+  margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.28);
+  font-size:10.5px;color:rgba(255,255,255,.82);
+}
+.mshare .ic{width:11px;height:11px}
+.hquick .chip.vpaste{background:var(--ink);color:#FFF;border-color:var(--ink)}
+
 /* 底部输入区：吸在 tabbar 上方 */
 .hdock{
   position:sticky;bottom:0;z-index:6;flex:0 0 auto;

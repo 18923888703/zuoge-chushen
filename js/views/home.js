@@ -89,11 +89,17 @@
   /* ---------- 快捷提问：把最常见的话摆出来，省得打字 ---------- */
   function quicks() {
     var p = window.Store.get().prefs;
-    var list = ['帮我随便定一道', '30 分钟以内', '清淡一点'];
-    list.push(p.spicy >= 2 ? '想吃辣的' : '不太能吃辣');
+    /* 第一颗是动作按钮（贴视频），其余是话 */
+    var list = [{ act: 'paste', label: '粘贴视频链接' }];
+    ['帮我随便定一道', '30 分钟以内', '清淡一点'].forEach(function (q) {
+      list.push({ act: 'ask', label: q, q: q });
+    });
+    list.push({ act: 'ask', label: p.spicy >= 2 ? '想吃辣的' : '不太能吃辣', q: p.spicy >= 2 ? '想吃辣的' : '不太能吃辣' });
     var f = window.Store.get().fridge || [];
-    list.push(f.length ? '冰箱里有' + f[0] : '家里有鸡蛋');
-    list.push(p.people + '个人吃点儿啥');
+    var fq = f.length ? '冰箱里有' + f[0] : '家里有鸡蛋';
+    list.push({ act: 'ask', label: fq, q: fq });
+    var pq = p.people + '个人吃点儿啥';
+    list.push({ act: 'ask', label: pq, q: pq });
     return list;
   }
 
@@ -127,10 +133,101 @@
 
   function byId(id) { return window.findRecipe(id); }
 
+  /* ---------- 视频拆解：别人分享来的视频，拆成照着能做的版本 ---------- */
+  /* 原型里拿不到视频画面，能用的只有分享文案的标题，所以一切依据都写在卡片上 */
+  function totalOf(r) { return r.prep + r.cook; }
+
+  function stepRow(s, i) {
+    return '<div class="vstep">' +
+        '<span class="i">' + (i + 1) + '</span>' +
+        '<div class="x">' + window.D.esc(s.text) +
+          (s.timer ? '<span class="vt">' + window.D.icon('timer', 'ic-sm') +
+            window.D.esc(s.timer.label) + ' ' + window.D.fmtDur(s.timer.seconds) + '</span>' : '') +
+          (s.tip ? '<span class="vtip">' + window.D.esc(s.tip) + '</span>' : '') +
+        '</div>' +
+      '</div>';
+  }
+
+  function videoCard(m, i) {
+    var p = m.plan;
+    var r = p.dish ? byId(p.dish.id) : null;
+    var all = r ? r.steps : [];
+    var shown = m.open ? all : all.slice(0, 3);
+
+    return '<div class="vcard">' +
+        '<div class="vhead">' +
+          '<span class="vplat">' + window.D.esc(p.platformName || '视频') + '</span>' +
+          '<span class="vtitle">' + (p.title ? window.D.esc(p.title) : '（这条分享没写标题）') + '</span>' +
+        '</div>' +
+        '<div class="vbody">' +
+
+          (r ?
+            '<div class="vdish">' + window.D.esc(r.name) +
+              (p.dish.confidence === 'fuzzy' ? '<span class="vguess">照「' +
+                window.D.esc(p.dish.keyword) + '」猜的</span>' : '') +
+            '</div>' +
+            '<div class="vsec">' + window.D.esc(r.tagline || '') + '</div>' +
+            '<div class="vmeta">' +
+              '<span class="chip ochre">' + totalOf(r) + ' 分钟</span>' +
+              '<span class="chip brass">' + ['简单', '还行', '费点事'][r.difficulty - 1] + '</span>' +
+              '<span class="chip slate">' + r.servings + ' 人份</span>' +
+              '<span class="chip">' + all.length + ' 步</span>' +
+            '</div>' +
+
+            '<div class="vlabel">配料（' + (r.ingredients.length + r.seasonings.length) + ' 样）</div>' +
+            '<div class="vings">' +
+              r.ingredients.concat(r.seasonings).map(function (x) {
+                return '<span class="chip plain">' + window.D.esc(x.name) + ' ' +
+                  window.D.esc(x.amount) + '</span>';
+              }).join('') +
+            '</div>' +
+
+            '<div class="vlabel">步骤</div>' +
+            '<div class="vsteps">' + shown.map(stepRow).join('') + '</div>' +
+            (all.length > 3 ?
+              '<button class="vmore" data-act="toggleShare" data-i="' + i + '">' +
+                (m.open ? '收起' : '展开剩下 ' + (all.length - 3) + ' 步') + '</button>' : '') +
+
+            '<div class="vacts">' +
+              '<button class="btn btn-primary" data-act="cook" data-id="' + r.id + '">现在开做</button>' +
+              '<button class="btn" data-act="detail" data-id="' + r.id + '">看菜谱</button>' +
+              '<button class="btn btn-ghost" data-act="addList" data-id="' + r.id + '" aria-label="加入买菜清单">' +
+                window.D.icon('plus', 'ic-sm') + '</button>' +
+            '</div>'
+            :
+
+            '<div class="vmiss">' +
+              (p.title
+                ? '标题是《' + p.title + '》，我的菜谱库里没有同名这道菜。'
+                : '这条分享里没写明是哪道菜。') +
+            '</div>' +
+            (p.near.length ?
+              '<div class="vlabel">库里最接近的几道</div>' +
+              '<div class="vings">' + p.near.map(function (x) {
+                return '<button class="chip" data-act="detail" data-id="' + x.id + '">' +
+                  window.D.esc(x.name) + '</button>';
+              }).join('') + '</div>' : '') +
+            '<div class="vmiss ask">再告诉我一句 —— 视频里主料是什么、大概几步，我照着给你配。</div>'
+          ) +
+
+          '<div class="vnote">' + window.D.icon('sparkle', 'ic-sm') + ' ' + window.D.esc(p.note) + '</div>' +
+        '</div>' +
+      '</div>';
+  }
+
+  /* 分享进来的那一句：长文案收成一行，别把对话撑爆 */
+  function shareSummary(p) {
+    if (!p.title) return '帮我拆解这个' + (p.platformName || '') + '视频';
+    return '帮我拆解这个' + (p.platformName || '') + '视频：' + p.title;
+  }
+
   /* ---------- 消息 → HTML ---------- */
   function msgHtml(m, i) {
     if (m.who === 'me') {
-      return '<div class="bubble me">' + window.D.esc(m.text) + '</div>';
+      return '<div class="bubble me">' + window.D.esc(m.text) +
+        (m.share ? '<div class="mshare">' + window.D.icon('play', 'ic-sm') +
+          window.D.esc('来自 ' + m.share.platformName) + '</div>' : '') +
+        '</div>';
     }
     if (m.kind === 'thinking') {
       return '<div class="bubble ai"><div class="who">厨房搭子</div>' +
@@ -140,6 +237,13 @@
       return '<div class="bubble ai" id="m' + i + '"><div class="who">厨房搭子</div>' +
         '<span class="t">' + window.D.esc(m.text) + '</span>' +
         (m.typing ? '<span class="caret"></span>' : '') + '</div>';
+    }
+    if (m.kind === 'share') {
+      return '<div class="bubble ai wide" id="m' + i + '">' +
+          '<div class="who">厨房搭子</div>' +
+          '<div class="lead">' + window.D.esc(m.say) + '</div>' +
+          videoCard(m, i) +
+        '</div>';
     }
     if (m.kind === 'dishes') {
       var ids = m.ids || [];
@@ -191,7 +295,8 @@
       var opening = '<div class="bubble ai wide">' +
           '<div class="who">厨房搭子</div>' +
           '<div class="lead">' + greet() + '，' + mealOf() + '想好吃什么了吗？<br>' +
-            '说一句就行，比如「家里有土豆，20 分钟搞定」，或者点下面这些。' +
+            '说一句就行，比如「家里有土豆，20 分钟搞定」；刷到抖音/小红书的菜视频，' +
+            '也可以直接分享过来或把链接贴给我，我帮你拆成配料和步骤。' +
             '我会按你记的口味挑：' + spicyTxt + ' · ' + oilTxt + ' · ' + prefs.people + ' 人。</div>' +
         '</div>';
 
@@ -220,15 +325,18 @@
           '<div class="hquick">' +
             '<div class="hquick-track">' +
               quicks().map(function (q) {
-                return '<button class="chip plain" data-act="ask" data-q="' + window.D.esc(q) + '">' +
-                  window.D.esc(q) + '</button>';
+                return q.act === 'paste'
+                  ? '<button class="chip plain vpaste" data-act="paste">' +
+                      window.D.icon('link', 'ic-sm') + window.D.esc(q.label) + '</button>'
+                  : '<button class="chip plain" data-act="ask" data-q="' + window.D.esc(q.q) + '">' +
+                      window.D.esc(q.label) + '</button>';
               }).join('') +
             '</div>' +
           '</div>' +
           '<div class="hbar">' +
             '<div class="field">' +
               window.D.icon('pot', 'ic-sm') +
-              '<input id="home-ask" data-enter="ask" placeholder="想吃什么？说句话就行" ' +
+              '<input id="home-ask" data-enter="ask" placeholder="想吃什么？也可以粘贴视频链接" ' +
                 'autocomplete="off" value="' + window.D.esc(draft) + '">' +
             '</div>' +
             '<button class="hsend" data-act="ask" aria-label="发送">' + window.D.icon('send', 'ic-sm') + '</button>' +
@@ -254,6 +362,28 @@
       detail: function (d) { window.Router.go('#/recipe/' + d.id); },
       cook: function (d) { window.Router.go('#/cook/' + d.id); },
       toPref: function () { window.Router.go('#/me'); },
+
+      /* 拆解卡：把剩下的步骤摊开 */
+      toggleShare: function (d) {
+        var m = msgs[+d.i];
+        if (!m || m.kind !== 'share') return;
+        m.open = !m.open;
+        window.Router.refresh();
+      },
+
+      /* 直接把抖音/小红书的分享文案贴进来（本机剪贴板，需 https 或 localhost） */
+      paste: function () {
+        if (!navigator.clipboard || !navigator.clipboard.readText) {
+          window.D.toast('长按输入框粘贴就行');
+          return;
+        }
+        navigator.clipboard.readText().then(function (txt) {
+          if (!txt || !txt.trim()) { window.D.toast('剪贴板是空的'); return; }
+          ask(txt.trim());
+        })['catch'](function () {
+          window.D.toast('读不到剪贴板，长按输入框粘贴吧');
+        });
+      },
 
       ask: function (d) {
         if (busy) return;
@@ -288,6 +418,29 @@
   function ask(q) {
     q = String(q || '').trim();
     if (!q) return;
+
+    /* 分享来的视频先识别。这里刻意不把长文案塞进气泡，收成一行标题 */
+    var plan = window.ShareParse ? window.ShareParse.plan(q) : null;
+    if (plan) {
+      msgs.push({ who: 'me', text: shareSummary(plan), share: { platformName: plan.platformName } });
+      busy = true;
+      var si = msgs.push({ who: 'ai', kind: 'thinking' }) - 1;
+      window.Router.refresh();
+      setTimeout(function () {
+        var r = plan.dish ? byId(plan.dish.id) : null;
+        msgs[si] = {
+          who: 'ai', kind: 'share', plan: plan, open: false,
+          say: r
+            ? '视频标题里这道是「' + r.name + '」，我按标准做法给你拆好了 —— ' +
+              (r.ingredients.length + r.seasonings.length) + ' 样配料、' + r.steps.length + ' 步。'
+            : '这条视频我暂时认不出来，先不给你瞎编配料。'
+        };
+        busy = false;
+        window.Router.refresh();
+      }, 680);
+      return;
+    }
+
     msgs.push({ who: 'me', text: q });
     busy = true;
 

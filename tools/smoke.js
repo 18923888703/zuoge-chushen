@@ -89,7 +89,67 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
     w.Router.name + ' / ' + (w.Router.params[0] || 'no id'));
   w.Router.go('#/home'); await wait(150);
 
+  // 视频分享 -> 拆成配料和步骤
+  ok('plain chat is not treated as share', w.ShareParse.plan('帮我随便定一道') === null);
+
+  const shareText = '【家常菜】这样做的红烧肉软糯入味，入口即化 #美食教程 #红烧肉 - 抖音 ' +
+    'https://v.douyin.com/iAbCdEfG/ 复制此链接，打开Dou音搜索，直接观看视频！';
+  const plan = w.ShareParse.plan(shareText);
+  ok('douyin share detected', !!plan && plan.platform === 'douyin', plan ? plan.platform : 'none');
+  ok('share title cleaned', !!plan && plan.title.indexOf('复制此链接') < 0 && plan.title.indexOf('#') < 0,
+    plan ? plan.title : 'none');
+  ok('dish recognized from share', !!plan && !!plan.dish && plan.dish.id === 'braised-pork',
+    plan && plan.dish ? plan.dish.id + ' / ' + plan.dish.confidence : 'none');
+
+  w.Router.go('#/home'); await wait(150);
+  const shopBefore = w.Store.get().shopping.length;
+  const inp3 = w.document.querySelector('#home-ask');
+  inp3.value = shareText;
+  inp3.dispatchEvent(new w.Event('input', { bubbles: true }));
+  w.document.querySelector('.hsend').click();
+  await wait(1400);
+  const vcard = w.document.querySelector('.bubble.ai .vcard');
+  ok('share answered with breakdown', !!vcard);
+  ok('breakdown names the dish', !!vcard && vcard.textContent.indexOf('红烧肉') >= 0);
+  ok('breakdown lists ingredients', !!vcard && vcard.querySelectorAll('.vings .chip').length >= 5,
+    vcard ? vcard.querySelectorAll('.vings .chip').length + ' items' : 'none');
+  ok('breakdown previews 3 steps', !!vcard && vcard.querySelectorAll('.vstep').length === 3,
+    vcard ? vcard.querySelectorAll('.vstep').length + ' steps' : 'none');
+  ok('breakdown declares its source', !!vcard &&
+    (vcard.querySelector('.vnote') || {}).textContent.indexOf('不是从视频画面里逐帧') >= 0,
+    vcard ? vcard.querySelector('.vnote').textContent.slice(0, 26) : 'none');
+
+  const moreBtn = w.document.querySelector('[data-act="toggleShare"]');
+  ok('expandable steps', !!moreBtn);
+  if (moreBtn) moreBtn.click();
+  await wait(150);
+  ok('all steps expand', w.document.querySelectorAll('.vstep').length > 3,
+    w.document.querySelectorAll('.vstep').length + ' steps');
+
+  const vAdd = w.document.querySelector('.vcard [data-act="addList"]');
+  if (vAdd) vAdd.click();
+  await wait(150);
+  ok('breakdown goes to shopping', w.Store.get().shopping.length > shopBefore,
+    shopBefore + ' -> ' + w.Store.get().shopping.length);
+
+  // 认不出来的视频：诚实说没有，不给编配料
+  const missPlan = w.ShareParse.plan('佛跳墙的极简做法 https://v.douyin.com/XyZ12345/ 复制此链接，打开Dou音搜索，直接观看视频！');
+  ok('unknown share yields no dish', !!missPlan && missPlan.dish === null,
+    missPlan ? String(missPlan.title) : 'null');
+  const inp4 = w.document.querySelector('#home-ask');
+  inp4.value = '佛跳墙的极简做法 https://v.douyin.com/XyZ12345/ 复制此链接，打开Dou音搜索，直接观看视频！';
+  inp4.dispatchEvent(new w.Event('input', { bubbles: true }));
+  w.document.querySelector('.hsend').click();
+  await wait(1400);
+  const missCards = w.document.querySelectorAll('.bubble.ai .vcard');
+  const missCard = missCards[missCards.length - 1];
+  ok('unknown share says so', !!missCard && /没写明是哪道菜|没有同名这道菜/.test(missCard.textContent),
+    missCard ? missCard.querySelector('.vmiss').textContent.slice(0, 30) : 'none');
+  ok('unknown share gives no fake ingredients',
+    !!missCard && missCard.querySelectorAll('.vings .chip.plain').length === 0);
+
   // 加清单
+  w.Router.go('#/home'); await wait(120);
   const addBtn = w.document.querySelector('[data-act="addList"]');
   if (addBtn) addBtn.click();
   await wait(150);

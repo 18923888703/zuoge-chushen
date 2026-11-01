@@ -1,7 +1,7 @@
 /* 我是厨神 · Service Worker
    策略：网络优先 + 缓存兜底（保证更新能拿到，断网也能开）
    发新版本时把 CACHE 里的版本号 +1 即可强制刷新缓存。 */
-var CACHE = 'chushen-v14';
+var CACHE = 'chushen-v15';
 
 var ASSETS = [
   './',
@@ -32,6 +32,7 @@ var ASSETS = [
   './js/core/store.js',
   './js/core/timer.js',
   './js/core/ai-mock.js',
+  './js/core/share-parse.js',
   './js/core/router.js',
   './js/views/home.js',
   './js/views/recipe.js',

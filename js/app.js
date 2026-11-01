@@ -106,7 +106,33 @@
   window.Router.register('cook', window.CookView);
   window.Router.register('me', window.MeView);
 
+  /* 从系统分享进来：抖音/小红书「分享 → 我是厨神」会把 title/text/url 拼在 query 上。
+     拿到就交给首页对话去拆解，并立刻把参数擦掉，免得刷新又问一遍。 */
+  function takeIncomingShare() {
+    try {
+      if (!location.search) return '';
+      var qs = new URLSearchParams(location.search);
+      var payload = String(qs.get('text') || qs.get('url') || qs.get('title') || '').trim();
+      if (history.replaceState) {
+        history.replaceState(null, '', location.pathname + (location.hash || ''));
+      }
+      return payload;
+    } catch (e) { return ''; }
+  }
+
   clock();
   setInterval(clock, 20000);
   window.Router.start();
+
+  /* 系统分享：等首页挂载好再把文案递过去 */
+  (function () {
+    var incoming = takeIncomingShare();
+    if (!incoming) return;
+    setTimeout(function () {
+      if (!window.HomeView || !window.HomeView.actions) return;
+      window.Router.go('#/home');
+      window.D.toast('收到分享，这就帮你拆成步骤', 1800);
+      window.HomeView.actions.ask({ q: incoming });
+    }, 320);
+  })();
 })();
