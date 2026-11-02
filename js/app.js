@@ -38,12 +38,34 @@
     };
   }
 
+  /* 悬浮的 AI 搭子：始终悬在底部操作区之上，绝不压住输入框和发送键。
+     首页底部有输入区（.hdock），就按它的实际高度往上让位。 */
+  function placeFab() {
+    var fab = window.D.$('#ai-fab');
+    if (!fab || fab.hidden) return;
+    var scr = window.D.$('#screen');
+    if (!scr) return;
+    var bottom = 70;                       /* 没输入区时：tab 栏上方 */
+    var src = scr.getBoundingClientRect();
+    var dock = window.D.$('.hdock');
+    if (dock) {
+      bottom = Math.max(bottom, Math.round(src.bottom - dock.getBoundingClientRect().top) + 12);
+    }
+    var mt = window.D.$('#mini-timer');
+    if (mt && !mt.hidden) {                /* 有计时条时再往上让一层 */
+      bottom = Math.max(bottom, Math.round(src.bottom - mt.getBoundingClientRect().top) + 10);
+    }
+    fab.style.bottom = bottom + 'px';
+  }
+
   function updateChrome(name) {
     var showBar = TAB_NAMES.indexOf(name) >= 0;
     window.D.$('#tabbar').hidden = !showBar;
     window.D.$('#ai-fab').hidden = !showBar;
     renderTabbar();
     renderMini();
+    placeFab();
+    requestAnimationFrame(placeFab);       /* 等这一帧排完版再量一次 */
   }
 
   function sheet(opts) {
@@ -85,10 +107,12 @@
   };
   window.App = App;
 
-  window.D.$('#ai-fab').innerHTML = window.D.icon('chef', 'ic-lg');
+  window.D.$('#ai-fab').innerHTML =
+    window.D.icon('sparkle', 'fab-sp') + '<span class="fab-t">AI 搭子</span>';
   window.D.$('#ai-fab').onclick = function () {
     window.Assistant.open();
   };
+  window.addEventListener('resize', placeFab);
 
   window.D.$('#tabbar').addEventListener('click', function (e) {
     var t = e.target.closest('[data-tab]');

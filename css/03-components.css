@@ -100,17 +100,29 @@
   font-size:9.5px;font-weight:600;line-height:16px;text-align:center;
 }
 
-/* ---------- 悬浮按钮：实心圆 + 轻阴影 ---------- */
+/* ---------- 悬浮按钮：AI 搭子（墨黑胶囊 + 星芒，呼吸光晕） ---------- */
 .fab{
-  position:absolute;z-index:6;right:16px;bottom:70px;
-  width:50px;height:50px;border-radius:50%;
-  background:var(--tomato);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 3px 10px rgba(70,82,58,.14);
-  transition:transform .14s;
+  position:absolute;z-index:7;right:16px;bottom:70px;
+  height:40px;padding:0 14px 0 11px;
+  border-radius:var(--pill);
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(150deg,#3C3C34 0%,#1F1F1B 58%,#11110D 100%);
+  color:#FFF;
+  border:1px solid rgba(255,255,255,.14);
+  transition:transform .14s ease,bottom .22s ease,box-shadow .22s ease;
+  animation:fabBreath 3.6s ease-in-out infinite;
 }
-.fab:active{transform:scale(.94)}
-.fab .ic{width:23px;height:23px;stroke:#FFF;stroke-width:1.7}
+.fab .ic{width:16px;height:16px;stroke:#FFF;stroke-width:1.6;flex:0 0 auto}
+.fab .ic.fab-sp{fill:#FFF;stroke:none}
+.fab .fab-t{font-size:11.5px;font-weight:600;letter-spacing:.06em;line-height:1;white-space:nowrap}
+.fab:active{transform:scale(.95)}
+@keyframes fabBreath{
+  0%,100%{box-shadow:0 6px 16px rgba(25,25,20,.22),0 0 0 0 rgba(31,31,27,.20)}
+  50%{box-shadow:0 8px 20px rgba(25,25,20,.26),0 0 0 7px rgba(31,31,27,0)}
+}
+@media (prefers-reduced-motion:reduce){
+  .fab{animation:none;box-shadow:0 6px 16px rgba(25,25,20,.22)}
+}
 
 /* ---------- 后台迷你计时条 ---------- */
 .mini-timer{
