@@ -116,7 +116,7 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   ok('breakdown previews 3 steps', !!vcard && vcard.querySelectorAll('.vstep').length === 3,
     vcard ? vcard.querySelectorAll('.vstep').length + ' steps' : 'none');
   ok('breakdown declares its source', !!vcard &&
-    (vcard.querySelector('.vnote') || {}).textContent.indexOf('不是从视频画面里逐帧') >= 0,
+    (vcard.querySelector('.vnote') || {}).textContent.indexOf('标准做法') >= 0,
     vcard ? vcard.querySelector('.vnote').textContent.slice(0, 26) : 'none');
 
   const moreBtn = w.document.querySelector('[data-act="toggleShare"]');
@@ -143,10 +143,46 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
   await wait(1400);
   const missCards = w.document.querySelectorAll('.bubble.ai .vcard');
   const missCard = missCards[missCards.length - 1];
-  ok('unknown share says so', !!missCard && /没写明是哪道菜|没有同名这道菜/.test(missCard.textContent),
+  ok('unknown share says so', !!missCard && /没对出菜名|没对出|最接近/.test(missCard.textContent),
     missCard ? missCard.querySelector('.vmiss').textContent.slice(0, 30) : 'none');
   ok('unknown share gives no fake ingredients',
     !!missCard && missCard.querySelectorAll('.vings .chip.plain').length === 0);
+
+  // 真实抖户口吻：口令前缀 + 【作者的作品】都得洗掉，菜名不能被作者名带偏
+  const realShare = '7.43 复制打开抖音，看看【小王爱做饭的作品】红烧肉这样做才好吃，肥而不腻 ' +
+    '#美食 #红烧肉 https://v.douyin.com/iRNBho6/ 复制此链接，打开Dou音搜索，直接观看视频！';
+  const realPlan = w.ShareParse.plan(realShare);
+  ok('real share title is clean', !!realPlan && realPlan.title === '红烧肉这样做才好吃，肥而不腻',
+    realPlan ? realPlan.title : 'none');
+  ok('real share no author junk', !!realPlan && realPlan.title.indexOf('的作品') < 0 &&
+    realPlan.title.indexOf('复制打开') < 0 && realPlan.title.indexOf('7.43') < 0);
+
+  // 同义词：西红柿炒鸡蛋 -> 番茄炒蛋（不能错配成西红柿鸡蛋汤）
+  const aliasPlan = w.ShareParse.plan('西红柿炒鸡蛋，最简单也最容易翻车 https://v.douyin.com/ttt222/');
+  ok('synonym maps to right dish', !!aliasPlan && aliasPlan.dish && aliasPlan.dish.id === 'tomato-egg',
+    aliasPlan && aliasPlan.dish ? aliasPlan.dish.id : 'none');
+
+  // 菜名只写在话题里：# 酸菜鱼
+  const tagPlan = w.ShareParse.plan('5.20 复制打开抖音，看看【厨房小白的作品】# 酸菜鱼 # 下饭菜 一学就会 https://v.douyin.com/qwe456/');
+  ok('dish found in hashtag', !!tagPlan && tagPlan.dish && tagPlan.dish.id === 'pickled-fish',
+    tagPlan && tagPlan.dish ? tagPlan.dish.id + ' / ' + tagPlan.dish.where : 'none');
+
+  // 认错了能一键换：点「不是这道？」里的候选，卡片就地改成那道菜
+  const fixBtns = w.document.querySelectorAll('.vcard [data-act="pickShare"]');
+  const fixBtn = fixBtns[fixBtns.length - 1];
+  ok('card offers a fix', !!fixBtn);
+  if (fixBtn) {
+    const wantName = fixBtn.textContent.trim();
+    const cards0 = Array.prototype.slice.call(w.document.querySelectorAll('.bubble.ai .vcard'));
+    const at = cards0.indexOf(fixBtn.closest('.vcard'));
+    fixBtn.click();
+    await wait(300);
+    const cards1 = w.document.querySelectorAll('.bubble.ai .vcard');
+    const target = cards1[at];
+    const dishTxt = target && target.querySelector('.vdish') ? target.querySelector('.vdish').textContent : '';
+    ok('pick swaps the dish', !!target && dishTxt.indexOf(wantName) >= 0,
+      wantName + ' / got: ' + (dishTxt || 'none'));
+  }
 
   // 加清单
   w.Router.go('#/home'); await wait(120);

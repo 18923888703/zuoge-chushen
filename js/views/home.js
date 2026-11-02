@@ -154,17 +154,24 @@
     var all = r ? r.steps : [];
     var shown = m.open ? all : all.slice(0, 3);
 
+    /* 「不是这道？」的候选：命中时给近似菜，没命中时给库里最接近的 */
+    var alt = (p.near || []).slice(0, 3);
+
     return '<div class="vcard">' +
         '<div class="vhead">' +
           '<span class="vplat">' + window.D.esc(p.platformName || '视频') + '</span>' +
-          '<span class="vtitle">' + (p.title ? window.D.esc(p.title) : '（这条分享没写标题）') + '</span>' +
+          '<span class="vtitle">' + (p.title ? window.D.esc(p.title) : '（这条分享没写正文标题）') + '</span>' +
         '</div>' +
+        ((p.tags && p.tags.length) ?
+          '<div class="vtags">' + p.tags.slice(0, 4).map(function (t) {
+            return '<span>#' + window.D.esc(t) + '</span>';
+          }).join('') + '</div>' : '') +
         '<div class="vbody">' +
 
           (r ?
             '<div class="vdish">' + window.D.esc(r.name) +
-              (p.dish.confidence === 'fuzzy' ? '<span class="vguess">照「' +
-                window.D.esc(p.dish.keyword) + '」猜的</span>' : '') +
+              (p.dish.confidence === 'fuzzy' ? '<span class="vguess">按标题猜的</span>' :
+                (p.dish.confidence === 'picked' ? '<span class="vguess ok">你选的</span>' : '')) +
             '</div>' +
             '<div class="vsec">' + window.D.esc(r.tagline || '') + '</div>' +
             '<div class="vmeta">' +
@@ -182,7 +189,7 @@
               }).join('') +
             '</div>' +
 
-            '<div class="vlabel">步骤</div>' +
+            '<div class="vlabel">步骤 · 菜谱库标准做法</div>' +
             '<div class="vsteps">' + shown.map(stepRow).join('') + '</div>' +
             (all.length > 3 ?
               '<button class="vmore" data-act="toggleShare" data-i="' + i + '">' +
@@ -198,17 +205,26 @@
 
             '<div class="vmiss">' +
               (p.title
-                ? '标题是《' + p.title + '》，我的菜谱库里没有同名这道菜。'
-                : '这条分享里没写明是哪道菜。') +
+                ? '标题是《' + p.title + '》，没对出菜名，库里也没有同名的一道。'
+                : '这条分享没写正文标题，我在库里没对出菜名。') +
             '</div>' +
             (p.near.length ?
               '<div class="vlabel">库里最接近的几道</div>' +
               '<div class="vings">' + p.near.map(function (x) {
-                return '<button class="chip" data-act="detail" data-id="' + x.id + '">' +
+                return '<button class="chip" data-act="pickShare" data-i="' + i + '" data-id="' + x.id + '">' +
                   window.D.esc(x.name) + '</button>';
               }).join('') + '</div>' : '') +
-            '<div class="vmiss ask">再告诉我一句 —— 视频里主料是什么、大概几步，我照着给你配。</div>'
+            '<div class="vmiss ask">再告诉我一句 —— 视频里主料是什么，我照着给你配。</div>'
           ) +
+
+          (r && alt.length ?
+            '<div class="vfix">' +
+              '<span class="q">不是这道？</span>' +
+              alt.map(function (x) {
+                return '<button class="chip" data-act="pickShare" data-i="' + i + '" data-id="' + x.id + '">' +
+                  window.D.esc(x.name) + '</button>';
+              }).join('') +
+            '</div>' : '') +
 
           '<div class="vnote">' + window.D.icon('sparkle', 'ic-sm') + ' ' + window.D.esc(p.note) + '</div>' +
         '</div>' +
@@ -371,6 +387,24 @@
         window.Router.refresh();
       },
 
+      /* 拆解卡认错了菜 —— 点一下直接换成选中的这道 */
+      pickShare: function (d) {
+        var i = +d.i;
+        var m = msgs[i];
+        if (!m || m.kind !== 'share') return;
+        var r = byId(d.id);
+        if (!r) return;
+        m.plan.dish = {
+          id: r.id, name: r.name, tagline: r.tagline,
+          confidence: 'picked', keyword: r.name, where: 'user'
+        };
+        m.plan.near = (m.plan.near || []).filter(function (x) { return x.id !== r.id; });
+        m.plan.note = '按你指的这道「' + r.name + '」配的，配料和步骤用的是菜谱库的标准做法。';
+        m.open = false;
+        window.Router.refresh();
+        window.D.toast('换成「' + r.name + '」了', 1600);
+      },
+
       /* 直接把抖音/小红书的分享文案贴进来（本机剪贴板，需 https 或 localhost） */
       paste: function () {
         if (!navigator.clipboard || !navigator.clipboard.readText) {
@@ -428,12 +462,19 @@
       window.Router.refresh();
       setTimeout(function () {
         var r = plan.dish ? byId(plan.dish.id) : null;
+        var how = '';
+        if (r) {
+          if (plan.dish.confidence === 'fuzzy') how = '标题里没写全菜名，我猜是「' + r.name + '」';
+          else if (plan.dish.where === 'tag') how = '标题没写菜名，话题里说的是「' + r.name + '」';
+          else how = '标题写的就是「' + r.name + '」';
+        }
         msgs[si] = {
           who: 'ai', kind: 'share', plan: plan, open: false,
           say: r
-            ? '视频标题里这道是「' + r.name + '」，我按标准做法给你拆好了 —— ' +
-              (r.ingredients.length + r.seasonings.length) + ' 样配料、' + r.steps.length + ' 步。'
-            : '这条视频我暂时认不出来，先不给你瞎编配料。'
+            ? how + '，我按库里的标准做法拆好了 —— ' +
+              (r.ingredients.length + r.seasonings.length) + ' 样配料、' + r.steps.length + ' 步。' +
+              (plan.dish.confidence === 'fuzzy' ? '不对的话，卡片底部可以一键换。' : '')
+            : '这条分享里我没对出是哪道菜，先不给你瞎编配料。'
         };
         busy = false;
         window.Router.refresh();

@@ -277,6 +277,24 @@
   font-size:11px;line-height:1.75;color:var(--ink-3);
 }
 .vnote .ic{flex:0 0 auto;width:13px;height:13px;margin-top:2px}
+/* 话题标签：标题之外的第二条线索 */
+.vtags{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:7px 12px 0;
+  font-size:11px;color:var(--ink-3);
+}
+.vtags span{white-space:nowrap}
+/* 认错了菜：一键换一道 */
+.vfix{
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--line);
+}
+.vfix .q{font-size:11px;color:var(--ink-3);letter-spacing:.02em}
+.vfix .chip{
+  height:26px;background:var(--paper-2);border:1px solid var(--line);
+  color:var(--ink-2);cursor:pointer;
+}
+.vguess.ok{background:var(--paper-2);color:var(--ink-2)}
 /* 来源标记：用户气泡下的一行小字 */
 .mshare{
   display:flex;align-items:center;gap:4px;
